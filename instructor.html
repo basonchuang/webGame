@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <!-- 輸入有幾個回合、P值、payoff、參與人數 -->
+        <form action="./function/config.php?method=createGame" method="POST">
+            <label>Create game!</label>
+            <br>
+            <label>Period</label>
+            <input name="Rid" type="text" required>
+            <br>
+            <label>P(Fraction of Avg.)</label>
+            <input name="pValue" type="text" required>
+            <br>
+            <label>Payoff</label>
+            <input name="payoff" type="text" required>
+            <br>
+            <label>Group Size</label>
+            <input name="numOfStudent" type="text" required>
+            <br>
+            <input type="submit" value="Create Game!">
+        </form>
+        <br>
+        <!-- 顯示遊戲列表 -->
+        <table>
+            <label>Select the game you want to start!</label>
+            <br>
+            <select id="gameList" name="gameList">
+                <option></option>
+            </select>
+            <br>
+            <button id="startGame">Select Game!</button>
+        </table>
+        <script type="text/javascript">
+            $.ajax({
+            url: "./function/config.php?method=showGames",
+            dataType: "json",
+            success: function (data) {
+                var htmls = '';
+                for (var i=0 ; i< data.length ; i++){
+                    htmls = '<option name=Game'+ i +'>' + data[i] + '</option>';
+                    document.getElementById("gameList").innerHTML += htmls;
+                }
+            },
+            error:function(err){console.log(err)}
+            });
+        </script>
+        <!-- 選擇遊戲 -->
+        <script>
+            $(function(){
+                $("#startGame").on("click",function(){
+                    Sid = document.getElementById("gameList").value;
+                    jumpToResult(Sid);
+                });
+            });
+            function jumpToResult(Sid){
+                url = "gameResult.html?Sid="+Sid;
+                
+                $.ajax({
+                    url:"./function/server.php?method=startGame",
+                    success: function(result){
+                        alert(result);
+                        window.location.href = url;
+                    },error:function(err){console.log(err)}
+                })
+            }
+        </script>
+    </body>
+</html>
