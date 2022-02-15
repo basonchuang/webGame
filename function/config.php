@@ -21,6 +21,9 @@
         }
     }
     function createGame(){
+        if(isset($_POST["Sid"])){
+            $Sid = $_POST["Sid"];
+        }
         if(isset($_POST["Rid"])){
             $Rid=$_POST["Rid"];
         }
@@ -33,7 +36,6 @@
         if(isset($_POST["numOfStudent"])){
             $numOfStudent=$_POST["numOfStudent"];
         }
-        $Sid = rand();
 
         $sql = "INSERT INTO `sessionData`(`Sid`, `Rid`, `pValue`, `payoff`, `numOfStudent`) VALUES ('$Sid','$Rid','$pValue','$payoff','$numOfStudent')";
         global $con;
@@ -83,21 +85,17 @@
         $Sid = $_POST['Sid'];
         $Rid = $_POST['Rid'];
         $pickNumber = $_POST['pickNumber'];
-        session_start();
-        $_SESSION['Sid'] = $Sid;
-        $_SESSION['pickNumber'] = $pickNumber;
-        $_SESSION['studentId'] = $studentId;
-        /*
+
+        
         $sql = "INSERT INTO `studentPlayRecord`(`studentId`, `studentName`, `Sid`, `Rid`, `pickNumber`, `studentPayOff`) VALUES ('$studentId','$studentName','$Sid','$Rid','$pickNumber','0')";
         global $con;
         try{
             mysqli_query($con,$sql);
-            header('Location:http://localhost/game.php');
+            //header('Location:http://localhost/game.php');
         }catch(Exception $e){
             $error = $e->getMessage();
             echo $error;
         }
-        */
     }
     function showGameInfo(){
         if(isset($_GET["Sid"])){
