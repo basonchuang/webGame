@@ -6,12 +6,127 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="./css/chat.css">
         <script>
-            $(document).ready(function() {
-                alert("This game is not ready yet!");
+            $(function(){
+                dialog = $("#dialog-joinPrisonerDilemmaGame").dialog({
+                    autoOpen: false,
+                    height: 600,
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        "Join a Prisoner's Dilemma Game": joinGame,
+                        Cancel: function() {
+                            dialog.dialog( "close" );
+                        }
+                    },
+                    close: function() {
+                        form[ 0 ].reset();
+                    }
+                });
+                form = dialog.find( "form" ).on( "submit", function( event ) {
+                    event.preventDefault();
+                    joinGame();
+                });
+                $(document).ready(function() {
+                    dialog.dialog("open");
+                });
             });
+            function joinGame(){
+                document.getElementById("id").innerHTML = document.getElementById("studentId").value;
+                document.getElementById("name").innerHTML = document.getElementById("studentName").value;
+                document.getElementById("gameId").innerHTML = document.getElementById("Pid").value
+                post_data = { action: "joinPGame",
+                    Pid : $("#gameId").text(),
+                    studentId : $("#id").text(), 
+                    studentName: $("#name").text()};
+
+                $.ajax({
+                    url: "./function/ajax-server.php",
+                    type: "POST",
+                    data: post_data,
+                    success: function(r){
+                        console.log(r);
+                    },
+                });
+
+                dialog.dialog("close");
+            }
+            function send(){
+                post_data = { action: "sendPGame", 
+                    Pid : $("#gameId").text(),
+                    studentId : $("#id").text(), 
+                    studentName: $("#name").text(), 
+                    chosen: document.querySelector('input[name="choice"]:checked').value };
+                
+                $.ajax({
+                    url: "./function/ajax-server.php",
+                    type: "POST",
+                    data: post_data,
+                    success: function(r) {
+                        document.getElementById("submitPick").value = "Waiting...";
+                        document.getElementById("submitPick").disabled = true;
+                    },
+                });
+            }
         </script>
+        <style>
+            fieldset {
+            overflow: hidden
+            }
+            
+            .some-class {
+            float: left;
+            clear: none;
+            }
+            
+            label {
+            float: left;
+            clear: none;
+            display: block;
+            padding: 0px 1em 0px 8px;
+            }
+            
+            input[type=radio],
+            input.radio {
+            float: left;
+            clear: none;
+            margin: 2px 0 0 2px;
+            }
+        </style>
     </head>
     <body>
-
+        <div id="dialog-joinPrisonerDilemmaGame" title="Join Prisoner Dilemma Game">
+            <form>
+                <fieldset>
+                <label>Your Student Id</label>
+                <input id="studentId" name="studentId" type="text" class="text ui-widget-content ui-corner-all" required>
+                <br>
+                <label>Your Name</label>
+                <input id="studentName" name="studentName" type="text" class="text ui-widget-content ui-corner-all" required>
+                <br>
+                <label>Game Code</label>
+                <input id="Pid" name="Pid" type="text" class="text ui-widget-content ui-corner-all" required>
+                <br>
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <div data-role="page" style="background:#CCCCFF;">
+            <div data-role="content">
+                <div class="main-content" style="position: absolute;width: 600px;height: 300px;top: 50%;left: 50%;margin: -150px 0 0 -100px;">
+                    <p>Your StudentId: <span id="id" class="namelite"></span></p>
+                    <p>Your Name: <span id="name" class="namelite"></span></p>
+                    <p>You are in Game: <span id="gameId" class="namelite"></span></p>
+                    <p>Your choice: 
+                        <fieldset>
+                        <div class="some-class">
+                        <input type="radio" name="choice" id="confess" value="confess"><label for="confess">Confess</label>
+                        <input type="radio" name="choice" id="silent" value="silent"><label for="silent">Stay Silent</label>
+                        </div>
+                        </fieldset>
+                    </p>
+                    <input id="submitPick" value="Submit!" type="button" onclick="send()">
+                </div>
+            </div>
+        </div>
     </body>
 </html>

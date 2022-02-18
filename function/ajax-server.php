@@ -4,11 +4,22 @@ header("Content-Type:text/html; charset=utf-8");
 
 $game_dir = "game";
 if(!file_exists($game_dir)) mkdir($game_dir);
+$game2_dir = "game2";
+if(!file_exists($game2_dir)) mkdir($game2_dir);
 
 switch($_POST["action"]) {
     case "send":
         $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
         writegame($gamefile);
+        echo gameLog($gamefile);
+        break;
+    case "joinPGame":
+        $gamefile = "$game2_dir/" . $_POST["Pid"] . ".log";
+        joinPGame($gamefile);
+        break;
+    case "sendPGame":
+        $gamefile = "$game2_dir/" . $_POST["Pid"] . ".log";
+        writeGame2($gamefile);
         echo gameLog($gamefile);
         break;
     case "startGame":
@@ -25,8 +36,15 @@ switch($_POST["action"]) {
         $gamefile = "$game_dir/" . $_POST["room"] . ".log";
         echo gameLog($gamefile);
         break;
+    case "poll2":
+        $gamefile = "$game2_dir/" . $_POST["room"] . ".log";
+        echo gameLog($gamefile);
+        break;
     case "room":
         echo getRoom($game_dir);
+        break;
+    case "room2":
+        echo getRoom2($game2_dir);
         break;
     case "getCloest":
         $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
@@ -142,6 +160,44 @@ function writegame($f) {
     $str = sprintf($format, date("H:i"), $studentId, $studentName, $pickNumber);
     file_put_contents($f, "$str\n", FILE_APPEND | LOCK_EX);
 }
+function joinPGame($f){
+    $studentId = $_POST["studentId"];
+    $studentName = $_POST["studentName"];
+
+    $format = "<p>%s Student %s %s:";
+    $str = sprintf($format, date("H:i"), $studentId, $studentName);
+    file_put_contents($f, "$str\n", FILE_APPEND | LOCK_EX);
+
+    $file_array = file( $f );
+    foreach ( $file_array as $line_num => $line ) { //輸出陣列元素
+        if( boolval($line_num & 1) & (strpos($line," 2 ")==false)){
+            $lines = file($f, FILE_IGNORE_NEW_LINES );
+            $lines[$line_num] = $lines[$line_num] . " 2 ";
+            file_put_contents($f, implode("\n", $lines) );
+            file_put_contents($f, "\n", FILE_APPEND | LOCK_EX);
+        }else if( !boolval($line_num & 1) & (strpos($line," 1 ")==false)){
+            $lines = file($f, FILE_IGNORE_NEW_LINES );
+            $lines[$line_num] = $lines[$line_num] . " 1 ";
+            file_put_contents($f, implode("\n", $lines) );
+            file_put_contents($f, "\n", FILE_APPEND | LOCK_EX);
+        }
+    }
+}
+function writeGame2($f){
+    $studentId = $_POST["studentId"];
+    $studentName = $_POST["studentName"];
+    $chosen = $_POST["chosen"];
+
+    $file_array = file( $f );
+    foreach ( $file_array as $line_num => $line ) { //輸出陣列元素
+        if( (strpos($line,$studentId)!==false) & (strpos($line,$studentName)!==false) ){
+            $lines = file($f, FILE_IGNORE_NEW_LINES );
+            $lines[$line_num] = $lines[$line_num] . " chosen: " . $chosen . "</p>";
+            file_put_contents($f, implode("\n", $lines) );
+            file_put_contents($f, "\n", FILE_APPEND | LOCK_EX);
+        }
+    }
+}
 
 function gameLog($f) {
     if(file_exists($f)) $log = file_get_contents($f); else $log = "";
@@ -191,21 +247,60 @@ function getRoom($dir) {
     }
     return json_encode($ffs);    
 }
+
+function getRoom2($dir){
+    $ffs = preg_grep('/^([^.])/', scandir($dir));
+    $ffs = array_values($ffs);
+    foreach($ffs as $key=>$ff) {
+        $ffs[$key] = explode(".", $ff)[0];
+    }
+
+    if(isset($_POST["Pid"])){
+        $Pid = $_POST["Pid"];
+    }
+    if(isset($_POST["numOfStudent"])){
+        $numOfStudent=$_POST["numOfStudent"];
+    }
+
+    global $con;
+    $sql = "INSERT INTO `pGameInfo`(`Pid`,`numOfStudent`) VALUES('$Pid','$numOfStudent')";
+    try{
+        mysqli_query($con,$sql);
+    }catch(Exception $e){
+        $error = $e->getMessage();
+        echo $error;
+    }
+
+    if(isset($_POST["new"])) {
+        $new = $_POST["new"];
+        file_put_contents("$dir/$new" . ".log", "");
+        $ffs = array_merge([ $new ], $ffs);
+    }
+    return json_encode($ffs);
+}
+
 function login(){
     $IAccount = $_POST["IAccount"];
     $IPassword = $_POST["IPassword"];
+    
     global $con;
     $sql = "SELECT * FROM `instructorAcc` WHERE `IAccount`='$IAccount' AND `IPassword`='$IPassword'";
     try{
         $result = mysqli_query($con,$sql);
         while($x=mysqli_fetch_array($result)){
+            $passChanged;
             if($x[0]!==""){
-                return $IAccount;
+                if($IPassword=="11111111" || $IPassword=="22222222" || $IPassword=="33333333"){
+                    $passChanged="0";
+                }else{
+                    $passChanged="1";
+                }
+                return $IAccount.$passChanged;
             }
         }
     }catch(Exception $e){
         $error = $e -> getMessage();
-        echo $error;
+        return $error;
     }
 }
 ?>

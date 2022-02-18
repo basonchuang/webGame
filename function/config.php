@@ -12,11 +12,17 @@
             case "startGame":
                 startGame();
                 break;
+            case "startPGame":
+                startPGame();
+                break;
             case "studentPickNum":
                 studentPickNum();
                 break;
             case "showGameInfo":
                 showGameInfo();
+                break;
+            case "showPGameInfo":
+                showPGameInfo();
                 break;
         }
     }
@@ -79,6 +85,21 @@
             }
         }
     }
+    function startPGame(){
+        if(isset($_POST["pGameList"])){
+            $Pid = $_POST["pGameList"];
+            $sql = "SELECT * FROM `pGameInfo` WHERE Pid=`$Pid`";
+            global $con;
+
+            try{
+                mysqli_query($con,$sql);
+                //header('Location:http://localhost/pGameResult.html');
+            }catch(Exception $e){
+                $error = $e->getMessage();
+                echo $error;
+            }
+        }
+    }
     function studentPickNum(){
         $studentId = $_POST['studentId'];
         $studentName = $_POST['studentName'];
@@ -116,6 +137,19 @@
             }
             $return = array_merge($Rid,$pValue,$payoff,$numOfStudent);
             echo json_encode($return);
+        }
+    }
+    function showPGameInfo(){
+        if(isset($_GET["Pid"])){
+            $Pid = $_GET["Pid"];
+            $sql = "SELECT * FROM `pGameInfo` WHERE `Pid` = '$Pid'";
+            global $con;
+            $result = mysqli_query($con,$sql);
+            $numOfStudent = array();
+            while($x=mysqli_fetch_array($result)){
+                array_push($numOfStudent,$x['numOfStudent']);
+            }
+            echo json_encode($numOfStudent);
         }
     }
     function startSession(){
