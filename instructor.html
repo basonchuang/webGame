@@ -58,7 +58,7 @@
         </script>
         <script>
             $(function(){
-                dialog = $("#dialog-createPrisonerGame").dialog({
+                dialog2 = $("#dialog-createPrisonerGame").dialog({
                     autoOpen: false,
                     height: 300,
                     width: 500,
@@ -66,19 +66,19 @@
                     buttons: {
                         "Create a Prisoner's Dilemma Game": addPGame,
                         Cancel: function() {
-                        dialog.dialog( "close" );
+                        dialog2.dialog( "close" );
                         }
                     },
                     close: function() {
                         form[ 0 ].reset();
                     }
                 });
-                form = dialog.find( "form" ).on( "submit", function( event ) {
+                form = dialog2.find( "form" ).on( "submit", function( event ) {
                     event.preventDefault();
                     addPGame();
                 });
                 $("#createPrisonerGame").button().on("click",function(){
-                    dialog.dialog("open");
+                    dialog2.dialog("open");
                 });
             });
         </script>
@@ -156,6 +156,20 @@
     </body>
     
     <script type="text/javascript">
+        var url = location.href;
+        if(url.indexOf('?')!=-1){
+            var account = "";
+            var ary = url.split('?')[1].split('&');
+            for(i=0;i<=ary.length-1;i++)
+            {
+                if(ary[i].split('=')[0] == 'account')
+                    account = ary[i].split('=')[1];
+            }
+        }
+        htmls = ''+account;
+        document.getElementById("account").innerHTML += htmls;
+        document.getElementById("IAccount").value = htmls;
+
         $(document).ready(function() {
             poll();
             poll2();
@@ -198,10 +212,10 @@
                     if(r!=""){
                         if(passChanged=="0"){
                             console.log("not changed");
-                            alert("Please change your password");
+                            //alert("Please change your password");
                         }else{
                             console.log("pass changed");
-                            alert(acc+" Login Success!");
+                            //alert(acc+" Login Success!");
                         }
                     }else{
                         alert("Login fail!");
@@ -211,9 +225,7 @@
             });
             loginDialog.dialog("close");
         }
-        function changePass(account){
-            
-        }
+        
         function jumpToResult(Sid){
             url = "gameResult.html?Sid="+Sid;
             

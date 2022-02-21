@@ -15,18 +15,3 @@
 		</form>
     </body>
 </html>
-
-<script type="text/javascript">
-	if (window.WebSocket){
-		console.log("This browser supports WebSocket!");
-	} else {
-		console.log("This browser does not support WebSocket.");
-	}
-		var ws = new WebSocket("ws://127.0.0.1:8080");
-		ws.onopen = function(){
-			console.log('连接成功');
-		}
-	function send(pickNum){
-		console.log(pickNum);
-	}
-</script>

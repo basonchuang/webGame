@@ -1,16 +1,101 @@
 <html>
     <head>
         <title>首頁</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script type="text/javascript" src="./function/json-serialization.js"></script>
+        <script type="text/javascript" src="./function/session.js"></script>
         <meta charset="utf-8">
         <link rel="stylesheet" href="./css/chat.css">
-
+        <script>
+            window.onload = function loginDia() {
+                loginDialog = $("#dialog-login").dialog({
+                    autoOpen: true,
+                    height: 400,
+                    width: 400,
+                    modal: true,
+                    buttons:{
+                        "login":login,
+                        Cancel: function(){
+                            loginDialog.dialog("close");
+                        }
+                    },
+                    close:function(){
+                        form[0].reset();
+                    }
+                });
+                form = loginDialog.find("form").on("submit",function(event){
+                    event.preventDefault();
+                    login();
+                });
+            }
+            function login(){
+                console.log("login");
+            }
+        </script>
     </head>
     <body class="inline" style="height: 100%;width: 100%;">
-        <a href="instructor.html">Instructor</a>
-        <br>
-        <div class="student">
-        <a class="studentButton" href="guessingGame.html">猜數字遊戲</a>
-        <a class="studentButton" href="prisonerGame.html">囚徒理論遊戲</a>
+
+        <!-- 登入的對話框 -->
+        <div id="dialog-login" title="Login">
+            <form>
+                <fieldset>
+                    <label>Account</label>
+                    <input id="IAccount" name="IAccount" type="text" class="text ui-widget-content ui-corner-all" required>
+                    <br>
+                    <!--
+                    <label>Password</label>
+                    <input id="IPassword" name="IPassword" type="password" class="text ui-widget-content ui-corner-all" required>
+                    -->
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
         </div>
     </body>
+    <script>
+        function login(){
+            var login = Session.get("login")||{
+                account: ""
+            };
+            post_data = {action: "login"};
+            post_data["IAccount"] = document.getElementById("IAccount").value;
+            //post_data["IPassword"] = document.getElementById("IPassword").value;
+
+            account = document.getElementById("IAccount").value;
+            
+            if(account.charAt(0) == "A"){
+                window.location.href = "instructor.html?account="+account;
+            }else{
+                window.location.href = "student.html";
+            }
+
+            /*
+            $.ajax({
+                url:"./function/ajax-server.php",
+                type:"POST",
+                data: post_data,
+                success:function(r){
+                    var acc = r.substring(0,r.length-1);
+                    var passChanged = r.substring(r.length-1,r.length);
+                   
+                    login.account=acc;
+                    $("#account").text(acc);
+
+                    if(r!=""){
+                        if(passChanged=="0"){
+                            console.log("not changed");
+                            //alert("Please change your password");
+                        }else{
+                            console.log("pass changed");
+                            //alert(acc+" Login Success!");
+                        }
+                    }else{
+                        alert("Login fail!");
+                        location.reload();
+                    }
+                },error:function(err){console.log(err)}
+            });*/
+            loginDialog.dialog("close");
+        }
+    </script>
 </html>
