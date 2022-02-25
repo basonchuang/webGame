@@ -6,6 +6,21 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="./css/chat.css">
         <script>
+            $(document).ready(function() {
+                var url = location.href;
+                if(url.indexOf('?')!=-1){
+                    var account = "";
+                    var ary = url.split('?')[1].split('&');
+                    for(i=0;i<=ary.length-1;i++)
+                    {
+                        if(ary[i].split('=')[0] == 'account')
+                            account = ary[i].split('=')[1];
+                            document.getElementById("studentId").value = account;
+                    }
+                }
+                //htmls = ''+account;
+            });
+        
             $(function(){
                 dialog = $("#dialog-joinGuessNumberGame").dialog({
                     autoOpen: false,

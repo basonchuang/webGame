@@ -25,10 +25,13 @@
                             <td>Number of student</td>
                             <td id="numOfStudent"></td>
                         </tr>
+
+                        <!--
                         <tr>
                             <td><input id="btn_Start" type="button" value="Start Game!" onclick="startGame()"></td>
                             <td><input id="btn_End" type="button" value="End Game!" onclick="endGame()" disabled></td>
                         </tr>
+                        -->
                         <tr>
                             <td id="gameResult"></td>
                         </tr>
@@ -55,44 +58,7 @@
         });
     }
     function endGame(){
-        /*
-        pValue = document.getElementById('pValue').textContent;
-        pValue = pValue.replace('P: ','');
-        pValue = parseFloat(pValue);
-
-        var sum = 0;
-        Sid = $("#Sid").text();
-        round = document.getElementById("round").value;
-        $.ajax({
-            url: "./function/ajax-server.php",
-            type: "POST",
-            data: { action: "endGame", Sid: Sid,round: round },
-            success: function(r) {
-                sum = r;
-                sum = sum * pValue;
-                console.log(pValue);
-                result = Math.round(sum);
-                document.getElementById('gameResult').innerHTML = "Result Number: "+result;
-
-                $.ajax({
-                url: "./function/ajax-server.php",
-                type: "POST",
-                data: {action: "getCloest", Sid: Sid, round: round, result: result },
-                success:function(r){
-                    document.getElementById('gameResult').innerHTML += "<br>Winner: "+ r;
-                } 
-                });
-            },
-        });
-
-        var curIndex = $("#round option:selected").index();
-        var select = document.getElementById("round");
-        var opts = select.getElementsByTagName("option");
-
-        if(curIndex != opts.length-1){
-            opts[curIndex+1].selected = true;
-        }
-        */
+        
         document.getElementById('btn_Start').disabled = false;
         document.getElementById('btn_End').disabled = true;
     }
@@ -109,7 +75,7 @@
         setTimeout(poll, 1000);
     }
 </script>
-<!-- 從URL中找出遊戲的Sid -->
+<!-- 從URL中找出遊戲的Pid -->
 <script>
     var url = location.href;
     if(url.indexOf('?')!=-1){

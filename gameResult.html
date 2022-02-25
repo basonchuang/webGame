@@ -24,7 +24,7 @@
                         <tr>
                             <td>Round</td>
                             <td>
-                                <select id="round">
+                                <select id="round" disabled>
                                 </select>
                             </td>
                         </tr>
@@ -106,6 +106,8 @@
 
         if(curIndex != opts.length-1){
             opts[curIndex+1].selected = true;
+        }else{
+            opts[0].selected = true;
         }
 
         document.getElementById('btn_Start').disabled = false;

@@ -5,13 +5,28 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="./css/chat.css">
         <script>
-
+            var url = location.href;
+            if(url.indexOf('?')!=-1){
+                var account = "";
+                var ary = url.split('?')[1].split('&');
+                for(i=0;i<=ary.length-1;i++)
+                {
+                    if(ary[i].split('=')[0] == 'account')
+                        account = ary[i].split('=')[1];
+                }
+            }
+            function jumpToGGame(){
+                window.location.href = "guessingGame.html?account="+account;
+            }
+            function jumpToPGame(){
+                window.location.href = "prisonerGame.html?account="+account;
+            }
         </script>
     </head>
     <body>
         <div class="student">
-            <a class="studentButton" href="guessingGame.html">猜數字遊戲</a>
-            <a class="studentButton" href="prisonerGame.html">囚徒理論遊戲</a>
+            <a class="studentButton" onclick="jumpToGGame();">猜數字遊戲</a>
+            <a class="studentButton" onclick="jumpToPGame();">囚徒理論遊戲</a>
         </div>
     </body>
 </html>

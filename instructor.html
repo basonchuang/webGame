@@ -11,17 +11,13 @@
             window.onload = function loginDia() {
                 loginDialog = $("#dialog-login").dialog({
                     autoOpen: true,
+                    closeOnEscape: false,
                     height: 400,
                     width: 400,
                     modal: true,
+                    closeText: "",
                     buttons:{
-                        "login":login,
-                        Cancel: function(){
-                            loginDialog.dialog("close");
-                        }
-                    },
-                    close:function(){
-                        form[0].reset();
+                        "login":login
                     }
                 });
                 form = loginDialog.find("form").on("submit",function(event){
@@ -83,56 +79,43 @@
             });
         </script>
     </head>
+
+    <!-- 建立猜數字遊戲的對話框 -->
+    <div id="dialog-createGuessNumberGame" title="Create Guess Number Game">
+        <form>
+            <fieldset>
+            <label>Period</label>
+            <input id="Rid" name="Rid" type="text" value="2" class="text ui-widget-content ui-corner-all" required>
+            <br>
+            <label>P(Fraction of Avg.)</label>
+            <input id="pValue" name="pValue" type="text" value="70%" class="text ui-widget-content ui-corner-all" required>
+            <br>
+            <label>Payoff</label>
+            <input id="payoff" name="payoff" type="text" value="20" class="text ui-widget-content ui-corner-all" required>
+            <br>
+            <label>Number of student</label>
+            <input id="numOfStudent" name="numOfStudent" type="text" value="30" class="text ui-widget-content ui-corner-all" required>
+            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- 建立囚徒理論遊戲的對話框 -->
+    <div id="dialog-createPrisonerGame" title="Create Prisoner's Dilemma Game">
+        <form>
+            <fieldset>
+                <label>Number of student</label>
+                <input id="nOfStudent" type="number" value="30"  class="text ui-widget-content ui-corner-all" required>
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>
+
     <body class="inline" style="height: 100%;width: 100%;">
         <p>Your Account: <span id="account" class="namelite"></span></p>
         <button id="createGuessNumberGame">Create Guess Number Game</button>
         <br>
         <button id="createPrisonerGame" class="ui-button ui-corner-all ui-widget">Create Prisoner Game</button>
-        
-        <!-- 老師登入的對話框 -->
-        <div id="dialog-login" title="Instructor Login">
-            <form>
-                <fieldset>
-                    <label>Account</label>
-                    <input id="IAccount" name="IAccount" type="text" class="text ui-widget-content ui-corner-all" required>
-                    <br>
-                    <label>Password</label>
-                    <input id="IPassword" name="IPassword" type="password" class="text ui-widget-content ui-corner-all" required>
-                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-                </fieldset>
-            </form>
-        </div>
-
-        <!-- 建立猜數字遊戲的對話框 -->
-        <div id="dialog-createGuessNumberGame" title="Create Guess Number Game">
-            <form>
-                <fieldset>
-                <label>Period</label>
-                <input id="Rid" name="Rid" type="text" value="2" class="text ui-widget-content ui-corner-all" required>
-                <br>
-                <label>P(Fraction of Avg.)</label>
-                <input id="pValue" name="pValue" type="text" value="70%" class="text ui-widget-content ui-corner-all" required>
-                <br>
-                <label>Payoff</label>
-                <input id="payoff" name="payoff" type="text" value="20" class="text ui-widget-content ui-corner-all" required>
-                <br>
-                <label>Number of student</label>
-                <input id="numOfStudent" name="numOfStudent" type="text" value="30" class="text ui-widget-content ui-corner-all" required>
-                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-                </fieldset>
-            </form>
-        </div>
-
-        <!-- 建立囚徒理論遊戲的對話框 -->
-        <div id="dialog-createPrisonerGame" title="Create Prisoner's Dilemma Game">
-            <form>
-                <fieldset>
-                    <label>Number of student</label>
-                    <input id="nOfStudent" type="number" value="30"  class="text ui-widget-content ui-corner-all" required>
-                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-                </fieldset>
-            </form>
-        </div>
 
         <br><br>
 
@@ -168,7 +151,6 @@
         }
         htmls = ''+account;
         document.getElementById("account").innerHTML += htmls;
-        document.getElementById("IAccount").value = htmls;
 
         $(document).ready(function() {
             poll();
@@ -212,9 +194,11 @@
                     if(r!=""){
                         if(passChanged=="0"){
                             console.log("not changed");
+                            loginDialog.dialog("close");
                             //alert("Please change your password");
                         }else{
                             console.log("pass changed");
+                            loginDialog.dialog("close");
                             //alert(acc+" Login Success!");
                         }
                     }else{
@@ -223,7 +207,6 @@
                     }
                 },error:function(err){console.log(err)}
             });
-            loginDialog.dialog("close");
         }
         
         function jumpToResult(Sid){

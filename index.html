@@ -29,9 +29,6 @@
                     login();
                 });
             }
-            function login(){
-                console.log("login");
-            }
         </script>
     </head>
     <body class="inline" style="height: 100%;width: 100%;">
@@ -41,7 +38,7 @@
             <form>
                 <fieldset>
                     <label>Account</label>
-                    <input id="IAccount" name="IAccount" type="text" class="text ui-widget-content ui-corner-all" required>
+                    <input id="Account" name="Account" type="text" class="text ui-widget-content ui-corner-all" required>
                     <br>
                     <!--
                     <label>Password</label>
@@ -51,25 +48,55 @@
                 </fieldset>
             </form>
         </div>
+
+        <!-- 老師登入的對話框 -->
+        <div id="dialog-ins-login" title="Instructor Login">
+            <form>
+                <fieldset>
+                    <label>Account</label>
+                    <input id="IAccount" name="IAccount" type="text" class="text ui-widget-content ui-corner-all" required>
+                    <br>
+                    <label>Password</label>
+                    <input id="IPassword" name="IPassword" type="password" class="text ui-widget-content ui-corner-all" required>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
     </body>
     <script>
+        loginInsDialog = $("#dialog-ins-login").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 400,
+            modal: true,
+            buttons:{
+                "login":InsLogin
+            }
+        });
         function login(){
             var login = Session.get("login")||{
                 account: ""
             };
             post_data = {action: "login"};
-            post_data["IAccount"] = document.getElementById("IAccount").value;
+            post_data["IAccount"] = document.getElementById("Account").value;
             //post_data["IPassword"] = document.getElementById("IPassword").value;
 
-            account = document.getElementById("IAccount").value;
+            account = document.getElementById("Account").value;
             
             if(account.charAt(0) == "A"){
-                window.location.href = "instructor.html?account="+account;
+                document.getElementById("IAccount").value = account;
+                loginInsDialog.dialog("open");
             }else{
-                window.location.href = "student.html";
+                window.location.href = "student.html?account="+account;
             }
 
-            /*
+            loginDialog.dialog("close");
+        }
+        function InsLogin(){
+            post_data = {action: "login"};
+            post_data["IAccount"] = account;
+            post_data["IPassword"] = document.getElementById("IPassword").value;
+
             $.ajax({
                 url:"./function/ajax-server.php",
                 type:"POST",
@@ -84,9 +111,11 @@
                     if(r!=""){
                         if(passChanged=="0"){
                             console.log("not changed");
+                            window.location.href = "instructor.html?account="+account;
                             //alert("Please change your password");
                         }else{
                             console.log("pass changed");
+                            window.location.href = "instructor.html?account="+account;
                             //alert(acc+" Login Success!");
                         }
                     }else{
@@ -94,8 +123,7 @@
                         location.reload();
                     }
                 },error:function(err){console.log(err)}
-            });*/
-            loginDialog.dialog("close");
+            });
         }
     </script>
 </html>
