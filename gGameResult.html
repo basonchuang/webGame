@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+        <link rel="stylesheet" href="./css/chat.css">
+    </head>
+    <body>
+        <div data-role="page" style="background:#CCCCFF;">
+            <div data-role="content" class="ui-content" role="main">
+                <div class="main-content" style="text-align:center;">
+                    <!-- 遊戲結果 -->
+                    <svg class="chart"></svg>
+                    <br><br>
+                    <!-- 遊戲資訊 -->
+                    <table class="center">
+                        <tr>
+                            <td>Sid</td>
+                            <td id="Sid"></td>
+                        </tr>
+                        <tr>
+                            
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+<!-- 開始遊戲與結束遊戲的function -->
+<script>
+    $(document).ready(function() { 
+        poll();
+    });
+    function poll(){
+        Sid = document.getElementById("Sid").innerHTML;
+        $.ajax({
+            url: "./function/ajax-server.php",
+            type: "POST",
+            data: { action: "findGGameResult", Sid: Sid },
+            success: function(r) {
+                console.log(r);
+                
+            },
+        });
+    }
+</script>
+<!-- 從URL中找出遊戲的Sid -->
+<script>
+    var url = location.href;
+    if(url.indexOf('?')!=-1){
+        var Sid = "";
+        var ary = url.split('?')[1].split('&');
+        for(i=0;i<=ary.length-1;i++)
+        {
+            if(ary[i].split('=')[0] == 'Sid')
+                Sid = ary[i].split('=')[1];
+        }
+    }
+    htmls = ''+Sid;
+    document.getElementById("Sid").innerHTML += htmls;
+</script>
+<!-- 找出遊戲資訊 -->
+<script>
+    var rheight = 45;
+    var dataset=[100, 27, 133, 19, 23, 76, 42, 58, 45,66,33];
+
+    var chart = d3.select('.chart')
+	.attr("width",500)
+	.attr('height',500)
+	
+
+var bar = chart.selectAll("g")
+	.data(dataset)
+	.enter().append("g")
+
+bar.append("rect")
+    .attr("y",function(d,i){return 500-(d*3);})
+    .attr("x",function(d,i){
+         return i * rheight;
+    })
+    .attr("height",function(d){
+         return (d*3);
+    })
+    .attr("width",rheight-3)
+    .attr("fill","#5F4B8B")
+	.attr("stroke-width",2)
+	.attr("stroke","black");
+
+
+bar.append('text')
+	.attr('y',function(d){return 500-(d*3)+21;})
+	.attr("x",function(d,i){
+         return i * rheight+22;
+    })
+	.style('fill', '#FFF')
+	.style('font-size', '18px')
+	.style('font-weight', 'bold')
+	.style("text-anchor", 'middle')
+	.text(function(d){
+	return d;}
+		 );
+</script>
+<br>
+</html>

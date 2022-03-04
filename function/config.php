@@ -30,6 +30,8 @@
         if(isset($_POST["Sid"])){
             $Sid = $_POST["Sid"];
         }
+        $arr = array();
+        $arr = explode("_",$Sid,2);
         if(isset($_POST["Rid"])){
             $Rid=$_POST["Rid"];
         }
@@ -43,7 +45,7 @@
             $numOfStudent=$_POST["numOfStudent"];
         }
 
-        $sql = "INSERT INTO `sessionData`(`Sid`, `Rid`, `pValue`, `payoff`, `numOfStudent`) VALUES ('$Sid','$Rid','$pValue','$payoff','$numOfStudent')";
+        $sql = "INSERT INTO `gGameInfo`(`createGGameBy`,`Sid`, `Rid`, `pValue`, `payoff`, `numOfStudent`) VALUES ('$arr[0]','$arr[1]','$Rid','$pValue','$payoff','$numOfStudent')";
         global $con;
         try{
             mysqli_query($con,$sql);
@@ -58,7 +60,7 @@
         return $percent / 100.00;
     }
     function showGames(){
-        $sql = "SELECT * FROM `sessionData` WHERE 1";
+        $sql = "SELECT * FROM `gGameInfo` WHERE 1";
         global $con;
         $result = mysqli_query($con,$sql);
         $Sid = array();
@@ -71,7 +73,9 @@
     function startGame(){
         if(isset($_POST["gameList"])){
             $Sid = $_POST["gameList"];
-            $sql = "SELECT * FROM `sessionData` WHERE Sid=`$Sid`";
+            $arr = array();
+            $arr = explode("_",$Sid,2);
+            $sql = "SELECT * FROM `gGameInfo` WHERE `createGGameBy`='$arr[0]' AND `Sid`='$arr[1]'";
             global $con;
 
             startSession();
@@ -104,15 +108,15 @@
         $studentId = $_POST['studentId'];
         $studentName = $_POST['studentName'];
         $Sid = $_POST['Sid'];
+        $arr = array();
+        $arr = explode("_",$Sid,2);
         $Rid = $_POST['Rid'];
         $pickNumber = $_POST['pickNumber'];
 
-        
-        $sql = "INSERT INTO `studentPlayRecord`(`studentId`, `studentName`, `Sid`, `Rid`, `pickNumber`, `studentPayOff`) VALUES ('$studentId','$studentName','$Sid','$Rid','$pickNumber','0')";
+        $sql = "INSERT INTO `gGameRecord`(`studentId`, `studentName`, `Iid`, `Sid`, `Rid`, `pickNumber`, `studentPayOff`) VALUES ('$studentId','$studentName','$arr[0]','$arr[1]','$Rid','$pickNumber','0')";
         global $con;
         try{
             mysqli_query($con,$sql);
-            //header('Location:http://localhost/game.php');
         }catch(Exception $e){
             $error = $e->getMessage();
             echo $error;
@@ -121,7 +125,9 @@
     function showGameInfo(){
         if(isset($_GET["Sid"])){
             $Sid = $_GET["Sid"];
-            $sql = "SELECT * FROM `sessionData` WHERE `Sid` = $Sid";
+            $arr = array();
+            $arr = explode("_",$Sid,2);
+            $sql = "SELECT * FROM `gGameInfo` WHERE `createGGameBy`= '$arr[0]' AND `Sid` = '$arr[1]'";
             global $con;
             $result = mysqli_query($con,$sql);
             $Rid = array();
@@ -142,7 +148,9 @@
     function showPGameInfo(){
         if(isset($_GET["Pid"])){
             $Pid = $_GET["Pid"];
-            $sql = "SELECT * FROM `pGameInfo` WHERE `Pid` = '$Pid'";
+            $arr = array();
+            $arr = explode("_",$Pid,2);
+            $sql = "SELECT * FROM `pGameInfo` WHERE `createPGameBy` = '$arr[0]' AND `Pid` = '$arr[1]'";
             global $con;
             $result = mysqli_query($con,$sql);
             $numOfStudent = array();
@@ -151,22 +159,5 @@
             }
             echo json_encode($numOfStudent);
         }
-    }
-    function startSession(){
-        $host = "127.0.0.1";
-        $port = 8080;
-        set_time_limit(0);
-        $socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
-        $result = socket_bind($socket, $host, $port) or die("Could not bind to socket\n");
-        $result = socket_listen($socket, 3) or die("Could not set up socket listener\n");
-        
-        $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
-        $input = socket_read($spawn, 1024) or die("Could not read input\n");
-        $input = trim($input);
-        echo "Client Message : ".$input;
-        $output = strrev($input) . "\n";
-        socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
-        socket_close($spawn);
-        socket_close($socket);
     }
 ?>

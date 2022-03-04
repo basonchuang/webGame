@@ -56,7 +56,7 @@
             $(function(){
                 dialog2 = $("#dialog-createPrisonerGame").dialog({
                     autoOpen: false,
-                    height: 300,
+                    height: 350,
                     width: 500,
                     modal: true,
                     buttons: {
@@ -104,6 +104,9 @@
     <div id="dialog-createPrisonerGame" title="Create Prisoner's Dilemma Game">
         <form>
             <fieldset>
+                <label>Round</label>
+                <input id="Round" name="Round" type="text" value="5" class="text ui-widget-content ui-corner-all" required>
+                <br>
                 <label>Number of student</label>
                 <input id="nOfStudent" type="number" value="30"  class="text ui-widget-content ui-corner-all" required>
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
@@ -120,7 +123,7 @@
         <br><br>
 
         <table>
-            <label>Select the guess number game you want to start!</label>
+            <label>Select the guess number game history!</label>
             <select id="gameList" name="gameList" class="text ui-widget-content ui-corner-all">
                 <option></option>
             </select>
@@ -129,7 +132,7 @@
         </table>
 
         <table>
-            <label>Select the prisoner's dilemma game you want to start!</label>
+            <label>Select the prisoner's dilemma game history!</label>
             <select id="pGameList" name="pGameList" class="text ui-widget-content ui-corner-all">
                 <option></option>
             </select>
@@ -155,8 +158,8 @@
         $(document).ready(function() {
             poll();
             poll2();
-            addGame();
-            addPGame();
+            //addGame();
+            //addPGame();
         });
         //選擇遊戲
         $(function(){
@@ -208,19 +211,17 @@
                 },error:function(err){console.log(err)}
             });
         }
+        function jumpToMonitor(Sid){
+            url = "gGameMonitor.html?Sid="+Sid;
+            window.location.href = url;
+        }
         
         function jumpToResult(Sid){
-            url = "gameResult.html?Sid="+Sid;
-            
-            $.ajax({
-                url:"./function/config.php?method=startGame",
-                success: function(result){
-                    window.location.href = url;
-                },error:function(err){console.log(err)}
-            })
+            url = "gGameResult.html?Sid="+Sid;
+            window.location.href = url;
         }
         function jumpToGame2Result(Pid){
-            url2 = "pGameResult.html?Pid="+Pid;
+            url2 = "pGameMonitor.html?Pid="+Pid;
 
             $.ajax({
                 url:"./function/config.php?method=startPGame",
@@ -231,17 +232,22 @@
         }
         //顯示遊戲列表
         function poll() {
-            room = $("#gameList").text();
-            if(room.trim() != "") {
-                $.ajax({
+            Iid = document.getElementById("account").innerHTML;
+            $.ajax({
                     url: "./function/ajax-server.php",
                     type: "POST",
-                    data: { action: "poll", room: room },
+                    data: { action: "poll", Iid: Iid },
                     success: function(r) {
+                        console.log(r);
+                        obj = JSON.parse(r);
+                        list_rooms = "";
+                        for(i=0;i<obj.length;i+=2) {
+                            list_rooms += "<option value='" + Iid + '_' + obj[i] + "'>Game code : " + Iid + '_' + obj[i] + "</option>";
+                        }
+                        $("#gameList").html(list_rooms).selectmenu("refresh", true);
                     },
                 });
-            }
-            setTimeout(poll, 1000);
+            //setTimeout(poll, 1000);
         }
         function poll2(){
             room2 = $("#pGameList").text();
@@ -264,14 +270,17 @@
             if(create) {
                 new_room = Math.floor(Math.random() * Math.floor(10000));
                 post_data["new"] = new_room;
-                
-                alert("CREATE A NEW GAME : " + new_room);
 
+                post_data["createGGameBy"] = document.getElementById("account").innerHTML;
                 post_data["Sid"] = new_room;
                 post_data["Rid"] = document.getElementById("Rid").value;
                 post_data["pValue"] = document.getElementById("pValue").value;
                 post_data["payoff"] = document.getElementById("payoff").value;
                 post_data["numOfStudent"] = document.getElementById("numOfStudent").value;
+
+                alert("CREATE A NEW GAME : " + new_room);
+                id = post_data["createGGameBy"] + "_" + new_room;
+                jumpToMonitor(id);
 
                 create = true;
             }
@@ -282,12 +291,13 @@
                 data: post_data,
                 success: function(r) {
                     obj = JSON.parse(r);
+                    /*
                     list_rooms = "";
                     for(id in obj) {
                         list_rooms += "<option value='" + obj[id] + "'>Game code : " + obj[id] + "</option>";
                     }
-                    
-                    $("#gameList").html(list_rooms).selectmenu("refresh", true);
+                    */
+                    //$("#gameList").html(list_rooms).selectmenu("refresh", true);
                 },error:function(err){console.log(err)}
             });
             dialog.dialog("close");
@@ -297,11 +307,15 @@
             if(create) {
                 new_room = Math.floor(Math.random() * Math.floor(10000));
                 post_data["new"] = new_room;
+
+                post_data["createPGameBy"] = document.getElementById("account").innerHTML;
+                post_data["Pid"] = new_room;
+                post_data["Round"] = document.getElementById("Round").value;
+                post_data["numOfStudent"] = document.getElementById("nOfStudent").value;
                 
                 alert("CREATE A NEW GAME : " + new_room);
-
-                post_data["Pid"] = new_room;
-                post_data["numOfStudent"] = document.getElementById("nOfStudent").value;
+                id = post_data["createPGameBy"] + "_" + new_room;
+                jumpToGame2Result(id);
 
                 create = true;
             }
@@ -313,11 +327,12 @@
                 success: function(r) {
                     obj = JSON.parse(r);
                     list_rooms = "";
+                    /*
                     for(id in obj) {
                         list_rooms += "<option value='" + obj[id] + "'>Game code : " + obj[id] + "</option>";
-                    }
-                    
-                    $("#pGameList").html(list_rooms).selectmenu("refresh", true);
+                    }*/
+                    jumpToGame2Result(obj);
+                    //$("#pGameList").html(list_rooms).selectmenu("refresh", true);
                 },error:function(err){console.log(err)}
             });
             dialog.dialog("close");

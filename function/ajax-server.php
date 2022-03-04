@@ -35,6 +35,7 @@ switch($_POST["action"]) {
     case "poll":
         $gamefile = "$game_dir/" . $_POST["room"] . ".log";
         echo gameLog($gamefile);
+        poll();
         break;
     case "poll2":
         $gamefile = "$game2_dir/" . $_POST["room"] . ".log";
@@ -53,17 +54,44 @@ switch($_POST["action"]) {
     case "login":
         echo login();
         break;
+    case "waitForGGameEnd":
+        echo waitForGGameEnd($_POST["Sid"]);
+        break;
+    case "findGGameResult":
+        echo findGGameResult($_POST["Sid"]);
+        break;
 }
 
+//function about calculate the result of G game
 function percentToDecimal($percent){
     $percent = str_replace('%', '', $percent);
     return $percent / 100.00;
 }
+function getClosestNum($search, $arr) {
+    $closest = null;
+    foreach ($arr as $item) {
+       if ($closest === null || abs($search - $closest) > abs($item - $search)) {
+          $closest = $item;
+       }
+    }
+    return $closest;
+}
 
+
+//Instructor's function
 function startgame($f){
     $format = "<p>%s Start Game: %s, Round: %s</p>";
     $str = sprintf($format, date("H:i"),$_POST["Sid"],$_POST["round"]);
     file_put_contents($f, "$str\n", FILE_APPEND | LOCK_EX);
+
+    $Sid = $_POST["Sid"];
+    $arr = array();
+    $arr = explode("_",$Sid,2);
+    $round = $_POST["round"];
+    $end = 1;
+    $sql = "UPDATE `gGameInfo` SET `gGameEnd`=$end WHERE `createGGameBy`='$arr[0]' AND `Sid`='$arr[1]' AND `Round`=$round";
+    global $con;
+    mysqli_query($con,$sql);
 }
 
 function endgame($f){
@@ -71,9 +99,17 @@ function endgame($f){
     $str = sprintf($format, date("H:i"),$_POST["Sid"],$_POST["round"]);
     file_put_contents($f, "$str\n", FILE_APPEND | LOCK_EX);
 
+    $Sid = $_POST["Sid"];
+    $arr = array();
+    $arr = explode("_",$Sid,2);
     $round = $_POST["round"];
-    $array=array();
+    $end = 2;
 
+    $sql = "UPDATE `gGameInfo` SET `gGameEnd`=$end WHERE `createGGameBy`='$arr[0]' AND `Sid`='$arr[1]' AND `Round`=$round";
+    global $con;
+    mysqli_query($con,$sql);
+
+    $array=array();
     $file_array = file( $f ); //取到檔案陣列
     foreach ( $file_array as $line_num => $line ) { //輸出陣列元素
         if((strpos($line,"Start")!==false) & (strpos($line,"Round: ".$round)!==false)){
@@ -94,16 +130,7 @@ function endgame($f){
     return ($sum/$num);
 }
 
-function getClosestNum($search, $arr) {
-    $closest = null;
-    foreach ($arr as $item) {
-       if ($closest === null || abs($search - $closest) > abs($item - $search)) {
-          $closest = $item;
-       }
-    }
-    return $closest;
-}
-
+//calculate the winner of G game
 function getCloest($f){
     $Sid = $_POST["Sid"];
     $round = $_POST["round"];
@@ -140,7 +167,7 @@ function getCloest($f){
         }
     }
 
-    $sql = "UPDATE `sessionData` SET `winner`=$winnerId WHERE `Sid`=$Sid AND `Round`=$round";
+    $sql = "UPDATE `gGameInfo` SET `winner`=$winnerId WHERE `Sid`=$Sid AND `Round`=$round";
     global $con;
     try{
         mysqli_query($con,$sql);
@@ -151,6 +178,7 @@ function getCloest($f){
     return $winner;
 }
 
+//student play g Game record
 function writegame($f) {
     $studentId = $_POST["studentId"];
     $studentName = $_POST["studentName"];
@@ -160,6 +188,8 @@ function writegame($f) {
     $str = sprintf($format, date("H:i"), $studentId, $studentName, $pickNumber);
     file_put_contents($f, "$str\n", FILE_APPEND | LOCK_EX);
 }
+
+//student join P game
 function joinPGame($f){
     $studentId = $_POST["studentId"];
     $studentName = $_POST["studentName"];
@@ -183,6 +213,8 @@ function joinPGame($f){
         }
     }
 }
+
+//student play P game record
 function writeGame2($f){
     $studentId = $_POST["studentId"];
     $studentName = $_POST["studentName"];
@@ -199,11 +231,30 @@ function writeGame2($f){
     }
 }
 
+//function of showing log file content
 function gameLog($f) {
     if(file_exists($f)) $log = file_get_contents($f); else $log = "";
     return $log;
 }
 
+function poll(){
+    if(isset($_POST["Iid"])){
+        $Iid = $_POST["Iid"];
+    }
+
+    global $con;
+    $sql = "SELECT `Sid` FROM `gGameInfo` WHERE `createGGameBy`='$Iid'";
+        
+    $result = mysqli_query($con,$sql);
+    $Sid = array();
+    while($x=mysqli_fetch_array($result)){
+        array_push($Sid,$x['Sid']);
+    }
+
+    return json_encode($Sid);
+}
+
+//create G game and save to database
 function getRoom($dir) {    
     $ffs = preg_grep('/^([^.])/', scandir($dir));
     $ffs = array_values($ffs);
@@ -212,6 +263,9 @@ function getRoom($dir) {
     }
     //$new = $_POST['new'];
  
+    if(isset($_POST["createGGameBy"])){
+        $createGGameBy = $_POST["createGGameBy"];
+    }
     if(isset($_POST["Sid"])){
         $Sid = $_POST["Sid"];
     }
@@ -230,7 +284,7 @@ function getRoom($dir) {
 
     global $con;
     for( $i=1 ; $i <= $Rid ; $i++ ){
-        $sql = "INSERT INTO `sessionData`(`Sid`, `Round`, `pValue`, `payoff`, `numOfStudent`) VALUES ('$Sid','$i','$pValue','$payoff','$numOfStudent')";
+        $sql = "INSERT INTO `gGameInfo`(`createGGameBy`,`Sid`, `Round`, `pValue`, `payoff`, `numOfStudent`) VALUES ('$createGGameBy','$Sid','$i','$pValue','$payoff','$numOfStudent')";
         
         try{
             mysqli_query($con,$sql);
@@ -242,12 +296,14 @@ function getRoom($dir) {
     
     if(isset($_POST["new"])) {
         $new = $_POST["new"];
-        file_put_contents("$dir/$new" . ".log", "");
-        $ffs = array_merge([ $new ], $ffs);
+        $file = $createGGameBy . "_" . $new;
+        file_put_contents("$dir/$file" . ".log", "");
+        $ffs = array_merge([ $file ], $ffs);
     }
     return json_encode($ffs);    
 }
 
+//create P game and save to database
 function getRoom2($dir){
     $ffs = preg_grep('/^([^.])/', scandir($dir));
     $ffs = array_values($ffs);
@@ -255,15 +311,21 @@ function getRoom2($dir){
         $ffs[$key] = explode(".", $ff)[0];
     }
 
+    if(isset($_POST["createPGameBy"])){
+        $createPGameBy = $_POST["createPGameBy"];
+    }
     if(isset($_POST["Pid"])){
         $Pid = $_POST["Pid"];
+    }
+    if(isset($_POST["Round"])){
+        $Round = $_POST["Round"];
     }
     if(isset($_POST["numOfStudent"])){
         $numOfStudent=$_POST["numOfStudent"];
     }
 
     global $con;
-    $sql = "INSERT INTO `pGameInfo`(`Pid`,`numOfStudent`) VALUES('$Pid','$numOfStudent')";
+    $sql = "INSERT INTO `pGameInfo`(`createPGameBy`,`Pid`,`Round`,`numOfStudent`) VALUES('$createPGameBy','$Pid','$Round','$numOfStudent')";
     try{
         mysqli_query($con,$sql);
     }catch(Exception $e){
@@ -273,12 +335,14 @@ function getRoom2($dir){
 
     if(isset($_POST["new"])) {
         $new = $_POST["new"];
-        file_put_contents("$dir/$new" . ".log", "");
-        $ffs = array_merge([ $new ], $ffs);
+        $file = $createPGameBy . "_" . $new;
+        file_put_contents("$dir/$file" . ".log", "");
+        //$ffs = array_merge([ $file ], $ffs);
     }
-    return json_encode($ffs);
+    return json_encode($file);
 }
 
+//checking instructor's password changed or not
 function login(){
     $IAccount = $_POST["IAccount"];
     $IPassword = $_POST["IPassword"];
@@ -302,5 +366,33 @@ function login(){
         $error = $e -> getMessage();
         return $error;
     }
+}
+
+function waitForGGameEnd($Sid){
+    $arr = array();
+    $arr = explode("_",$Sid,2);
+    $sql = "SELECT `gGameEnd` FROM `gGameInfo` WHERE `createGGameBy`= '$arr[0]' AND `Sid` = '$arr[1]'";
+    global $con;
+    $result = mysqli_query($con,$sql);
+    $end = array();
+    while($x=mysqli_fetch_array($result)){
+        array_push($end,$x['gGameEnd']);
+    }
+
+    echo json_encode($end);
+}
+
+function findGGameResult($Sid){
+    $arr = array();
+    $arr = explode("_",$Sid,2);
+    $sql = "SELECT `pickNumber` FROM `gGameRecord` WHERE `createGGameBy`= '$arr[0]' AND `Sid` = '$arr[1]'";
+    global $con;
+    $result = mysqli_query($con,$sql);
+    $end = array();
+    while($x=mysqli_fetch_array($result)){
+        array_push($end,$x['gGameEnd']);
+    }
+
+    echo json_encode($end);
 }
 ?>
