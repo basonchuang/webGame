@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
-        <link rel="stylesheet" href="./css/chat.css">
+        <link rel="stylesheet" href="../css/chat.css">
     </head>
     <body>
         <div data-role="page" style="background:#CCCCFF;">
@@ -63,7 +63,7 @@
         Sid = $("#Sid").text();
         round = document.getElementById("round").value;
         $.ajax({
-            url: "./function/ajax-server.php",
+            url: "../function/ajax-server.php",
             type: "POST",
             data: { action: "startGame", Sid: Sid, round: round },
             success: function(r) {
@@ -79,7 +79,7 @@
         Sid = $("#Sid").text();
         round = document.getElementById("round").value;
         $.ajax({
-            url: "./function/ajax-server.php",
+            url: "../function/ajax-server.php",
             type: "POST",
             data: { action: "endGame", Sid: Sid,round: round },
             success: function(r) {
@@ -90,7 +90,7 @@
                 document.getElementById('gameResult').innerHTML = "Result Number: "+result;
 
                 $.ajax({
-                url: "./function/ajax-server.php",
+                url: "../function/ajax-server.php",
                 type: "POST",
                 data: {action: "getCloest", Sid: Sid, round: round, result: result },
                 success:function(r){
@@ -116,7 +116,7 @@
     function poll() {
         room = $("#Sid").text();
         $.ajax({
-                url: "./function/ajax-server.php",
+                url: "../function/ajax-server.php",
                 type: "POST",
                 data: { action: "poll", room: room },
                 success: function(r) {
@@ -144,7 +144,7 @@
 <!-- 找出遊戲資訊 -->
 <script>
     $.ajax({
-    url: "./function/config.php?method=showGameInfo&Sid="+Sid,
+    url: "../function/config.php?method=showGameInfo&Sid="+Sid,
     dataType: "json",
     success: function (data) {
         var Rid = data[1];

@@ -87,7 +87,7 @@
                 document.getElementById("IAccount").value = account;
                 loginInsDialog.dialog("open");
             }else{
-                window.location.href = "student.html?account="+account;
+                window.location.href = "./StudentPages/student.html?account="+account;
             }
 
             loginDialog.dialog("close");
@@ -111,11 +111,11 @@
                     if(r!=""){
                         if(passChanged=="0"){
                             console.log("not changed");
-                            window.location.href = "instructor.html?account="+account;
+                            window.location.href = "./InstructorPages/instructor.html?account="+account;
                             //alert("Please change your password");
                         }else{
                             console.log("pass changed");
-                            window.location.href = "instructor.html?account="+account;
+                            window.location.href = "./InstructorPages/instructor.html?account="+account;
                             //alert(acc+" Login Success!");
                         }
                     }else{

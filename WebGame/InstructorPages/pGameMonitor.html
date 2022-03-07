@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
-        <link rel="stylesheet" href="./css/chat.css">
+        <link rel="stylesheet" href="../css/chat.css">
     </head>
     <body>
         <div data-role="page" style="background:#CCCCFF;">
@@ -50,7 +50,7 @@
         document.getElementById('btn_End').disabled = false;
         Pid = $("#Pid").text();
         $.ajax({
-            url: "./function/ajax-server.php",
+            url: "../function/ajax-server.php",
             type: "POST",
             data: { action: "startPGame", Pid: Pid },
             success: function(r) {
@@ -65,7 +65,7 @@
     function poll() {
         room = $("#Pid").text();
         $.ajax({
-                url: "./function/ajax-server.php",
+                url: "../function/ajax-server.php",
                 type: "POST",
                 data: { action: "poll2", room: room },
                 success: function(r) {
@@ -93,7 +93,7 @@
 <!-- 找出遊戲資訊 -->
 <script>
     $.ajax({
-    url: "./function/config.php?method=showPGameInfo&Pid="+Pid,
+    url: "../function/config.php?method=showPGameInfo&Pid="+Pid,
     dataType: "json",
     success: function (data) {
         var numOfStudent = data[0];

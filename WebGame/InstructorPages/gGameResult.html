@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
-        <link rel="stylesheet" href="./css/chat.css">
+        <link rel="stylesheet" href="../css/chat.css">
     </head>
     <body>
         <div data-role="page" style="background:#CCCCFF;">
@@ -37,7 +37,7 @@
     function poll(){
         Sid = document.getElementById("Sid").innerHTML;
         $.ajax({
-            url: "./function/ajax-server.php",
+            url: "../function/ajax-server.php",
             type: "POST",
             data: { action: "findGGameResult", Sid: Sid },
             success: function(r) {

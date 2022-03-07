@@ -2,53 +2,53 @@
 include_once "database.php";
 header("Content-Type:text/html; charset=utf-8");
 
-$game_dir = "game";
-if(!file_exists($game_dir)) mkdir($game_dir);
-$game2_dir = "game2";
-if(!file_exists($game2_dir)) mkdir($game2_dir);
+$gGame_dir = "gGame";
+if(!file_exists($gGame_dir)) mkdir($gGame_dir);
+$pGame_dir = "pGame";
+if(!file_exists($pGame_dir)) mkdir($pGame_dir);
 
 switch($_POST["action"]) {
     case "send":
-        $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
+        $gamefile = "$gGame_dir/" . $_POST["Sid"] . ".log";
         writegame($gamefile);
         echo gameLog($gamefile);
         break;
     case "joinPGame":
-        $gamefile = "$game2_dir/" . $_POST["Pid"] . ".log";
+        $gamefile = "$pGame_dir/" . $_POST["Pid"] . ".log";
         joinPGame($gamefile);
         break;
     case "sendPGame":
-        $gamefile = "$game2_dir/" . $_POST["Pid"] . ".log";
+        $gamefile = "$pGame_dir/" . $_POST["Pid"] . ".log";
         writeGame2($gamefile);
         echo gameLog($gamefile);
         break;
     case "startGame":
-        $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
+        $gamefile = "$gGame_dir/" . $_POST["Sid"] . ".log";
         startgame($gamefile);
         echo gameLog($gamefile);
         break;
     case "endGame":
-        $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
+        $gamefile = "$gGame_dir/" . $_POST["Sid"] . ".log";
         echo endgame($gamefile);
         gameLog($gamefile);
         break;
     case "poll":
-        $gamefile = "$game_dir/" . $_POST["room"] . ".log";
+        $gamefile = "$gGame_dir/" . $_POST["room"] . ".log";
         echo gameLog($gamefile);
         poll();
         break;
     case "poll2":
-        $gamefile = "$game2_dir/" . $_POST["room"] . ".log";
+        $gamefile = "$pGame_dir/" . $_POST["room"] . ".log";
         echo gameLog($gamefile);
         break;
     case "room":
-        echo getRoom($game_dir);
+        echo getRoom($gGame_dir);
         break;
     case "room2":
-        echo getRoom2($game2_dir);
+        echo getRoom2($pGame_dir);
         break;
     case "getCloest":
-        $gamefile = "$game_dir/" . $_POST["Sid"] . ".log";
+        $gamefile = "$gGame_dir/" . $_POST["Sid"] . ".log";
         echo getCloest($gamefile);
         break;
     case "login":
