@@ -3,127 +3,81 @@
         <title>首頁</title>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-        <script type="text/javascript" src="./function/json-serialization.js"></script>
-        <script type="text/javascript" src="./function/session.js"></script>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="./css/chat.css">
+        <link href="./css/moblab.css" rel="stylesheet" type="text/css">
+        <link href="./css/server_common.css" rel="stylesheet" type="text/css">
+        <link href="./css/login.css" rel="stylesheet" type="text/css">
         <script>
-            window.onload = function loginDia() {
-                loginDialog = $("#dialog-login").dialog({
-                    autoOpen: true,
-                    height: 400,
-                    width: 400,
-                    modal: true,
-                    buttons:{
-                        "login":login,
-                        Cancel: function(){
-                            loginDialog.dialog("close");
-                        }
-                    },
-                    close:function(){
-                        form[0].reset();
-                    }
-                });
-                form = loginDialog.find("form").on("submit",function(event){
-                    event.preventDefault();
-                    login();
-                });
+            function handleShowPassword(checkBox) {
+                document.getElementById('password').type = checkBox.checked?'text':'password';
+                document.getElementById('showPasswordLabel').innerHTML = checkBox.checked?'Hide':'Show';
             }
         </script>
     </head>
-    <body class="inline" style="height: 100%;width: 100%;">
-
-        <!-- 登入的對話框 -->
-        <div id="dialog-login" title="Login">
-            <form>
-                <fieldset>
-                    <label>Account</label>
-                    <input id="Account" name="Account" type="text" class="text ui-widget-content ui-corner-all" required>
+    <body id="login">
+        <div class="blog">
+            <div id="blogArticle">
+                <iframe id="blogIframe" src="./css/all.html" class="instructorBlogPage"></iframe>
+            </div>
+        </div>
+        <div class="login-div">
+            <div class="login-title">
+                <div class="branding-new" style="width:154px; height:32px;"></div>
+            </div>
+            <div class="login-title-label">
+                <div class="login-content-div">
+                    <div aria-label="moblab log in" class="subheader-login">
+                        <h1>Instructor Log In</h1>
+                    </div>
+                    <div class="login-error-message" id="errorMsg" style="display:none;">
+                        <span id="errorMsgSpan" class="login-error-message-span" style="display:none"></span>
+                        <span id="successMsg" class="login-error-message-span" style="display:none"></span>
+                    </div>
                     <br>
-                    <!--
-                    <label>Password</label>
-                    <input id="IPassword" name="IPassword" type="password" class="text ui-widget-content ui-corner-all" required>
+                    <!-- Register
+                    <div class="login-register-div">
+                        <span class="login-register-span">Need an account? <a id="registerLink" href="https://game.moblab.com/server/register.jsp">Sign up</a></span>
+                    </div>
                     -->
-                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-                </fieldset>
+                </div>
+            </div>
+            <form method="POST" class="loginForm" id="loginForm" name="loginForm" autocomplete="off" action="./function/config.php">
+                <div class="login-content-div" id="loginpartial">
+                    <div class="login-username-div">
+                        <div class="login-username-label login-label">
+                            Account
+                        </div>
+                        <input type="text" class="template_input" name="username" id="username" tabindex="1" value="" aria-label="Username / Email">
+                    </div>
+                    <div class="login-password-div">
+                        <div class="login-password-label login-label"> Password
+                            <div class="login-showPassword-div">
+                                <div class="redCheckboxWrapper" style="color:#4386cb">
+                                    <input type="checkbox" name="showPassword" id="showPassword" value="true" onchange="handleShowPassword(this)" tabindex="-1" aria-hidden="true">
+                                    <label style="color:#4386cb"></label>
+                                    <label id="showPasswordLabel" class="passwordLabel" for="showPassword">Show</label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="password" class="template_input" name="password" id="password" tabindex="2" aria-label="password">
+                    </div>
+                </div>
+                <input type="hidden" id="action" value="insLogin">
+                <!--
+                <input type="hidden" name="savedURI" value="">
+                <input type="hidden" name="return_to" value="">
+                <input type="hidden" id="classCodeInput" name="classCode" value="">
+                <input type="hidden" id="queryParamInput" name="queryString" value="">
+                -->
+                <div class="login-btn-remember-div">
+                    <div class="login-btn-div moblabOrangeBtn orangeBtnDialog">
+                        <input tabindex="3" type="submit" class="template_submit dijitButtonNode" name="Submit" value="Log In">
+                    </div>
+                    <!--
+                    <span class="login-register-span"><a tabindex="4" class="resetLabel" href="https://game.moblab.com/server/resetpassword.jsp">forgot password?</a></span>
+                    -->
+                </div>
             </form>
-        </div>
-
-        <!-- 老師登入的對話框 -->
-        <div id="dialog-ins-login" title="Instructor Login">
-            <form>
-                <fieldset>
-                    <label>Account</label>
-                    <input id="IAccount" name="IAccount" type="text" class="text ui-widget-content ui-corner-all" required>
-                    <br>
-                    <label>Password</label>
-                    <input id="IPassword" name="IPassword" type="password" class="text ui-widget-content ui-corner-all" required>
-                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-                </fieldset>
-            </form>
-        </div>
-    </body>
-    <script>
-        loginInsDialog = $("#dialog-ins-login").dialog({
-            autoOpen: false,
-            height: 400,
-            width: 400,
-            modal: true,
-            buttons:{
-                "login":InsLogin
-            }
-        });
-        function login(){
-            var login = Session.get("login")||{
-                account: ""
-            };
-            post_data = {action: "login"};
-            post_data["IAccount"] = document.getElementById("Account").value;
-            //post_data["IPassword"] = document.getElementById("IPassword").value;
-
-            account = document.getElementById("Account").value;
             
-            if(account.charAt(0) == "A"){
-                document.getElementById("IAccount").value = account;
-                loginInsDialog.dialog("open");
-            }else{
-                window.location.href = "./StudentPages/student.html?account="+account;
-            }
-
-            loginDialog.dialog("close");
-        }
-        function InsLogin(){
-            post_data = {action: "login"};
-            post_data["IAccount"] = account;
-            post_data["IPassword"] = document.getElementById("IPassword").value;
-
-            $.ajax({
-                url:"./function/ajax-server.php",
-                type:"POST",
-                data: post_data,
-                success:function(r){
-                    var acc = r.substring(0,r.length-1);
-                    var passChanged = r.substring(r.length-1,r.length);
-                   
-                    login.account=acc;
-                    $("#account").text(acc);
-
-                    if(r!=""){
-                        if(passChanged=="0"){
-                            console.log("not changed");
-                            window.location.href = "./InstructorPages/instructor.html?account="+account;
-                            //alert("Please change your password");
-                        }else{
-                            console.log("pass changed");
-                            window.location.href = "./InstructorPages/instructor.html?account="+account;
-                            //alert(acc+" Login Success!");
-                        }
-                    }else{
-                        alert("Login fail!");
-                        location.reload();
-                    }
-                },error:function(err){console.log(err)}
-            });
-        }
-    </script>
+        </div>
 </html>

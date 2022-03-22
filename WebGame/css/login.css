@@ -1,0 +1,396 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 25, 2018, 9:59:33 AM
+    Author     : jeanetteduran
+*/
+@charset "UTF-8";
+/*
+@font-face {
+  font-family: 'moblab';
+  src: url("fonts/moblab/moblab.eot?#iefix") format("embedded-opentype"),
+    url("fonts/moblab/moblab.woff") format("woff"),
+    url("fonts/moblab/moblab.ttf") format("truetype"),
+    url("fonts/moblab/moblab.svg#moblab") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/Lato/Lato-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/Lato/Lato-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url("fonts/Roboto/Roboto-Light.woff2") format("woff2"),
+    url("fonts/Roboto/Roboto-Light.woff") format("woff"),
+    url("fonts/Roboto/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}*/
+/* ------- Log in attributes -------- */
+
+#login .branding {
+    font-size:30px;
+    color:#EB2F4A;
+}
+.login-div {
+    font-family: Roboto, sans-serif, Arial, Helvetica;
+    height: 100%;
+    position: absolute;
+    color: black;
+    width: 30%;
+    min-width: 280px;
+}
+
+.login-title-label {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-title {
+    display:flex;
+    position:relative;
+    margin-top: 15%;
+    align-items: center;
+    justify-content: center;
+}
+
+.moblab-title{
+    font-size: 30px;
+    font-weight:lighter;
+}
+
+.subheader-login {
+    text-align:left;
+    margin-top: 49px;
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 24px;
+    color: #1B2224;
+}
+
+#login .login-div .login-register-div {
+    margin-top: 10px;
+    text-align: left;
+    margin-bottom:30px;
+}
+
+#login .login-div .login-register-span {
+    font-size: 14px;
+}
+
+@media only screen and (max-width: 1150px) {
+    
+    #login .branding, .moblab-title {
+        font-size:40px;
+    }
+
+    .subheader-login {
+        text-align:left;
+        font-size: 24px;
+        margin-top: 49px;
+        font-weight:400;
+    }
+
+    #login .login-div .login-register-span {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    
+    #login .branding, .moblab-title {
+        font-size:30px;
+    }
+
+}
+
+#registerLink {
+    color:#EE2A49;
+    border-bottom: 0px solid #FFFFFF
+}
+
+.login-div .login-label {
+    font-size: 14px;
+    margin-bottom: 3px;
+    color:#47525D;
+}
+
+.login-username-div, .login-password-div, .login-remember-div {
+    padding-bottom:10px;
+}
+
+.login-remember-div  {
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+
+.loginForm {
+    margin-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-content-div, .login-btn-remember-div {
+    width: 80%;
+    max-width: 300px;
+}
+
+.login-div input[type="text"],
+.login-div input[type="password"] {
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #9DAAAF;
+    width: 100%;
+    height: 46px;
+    padding-left: 10px;
+}
+
+.login-div input[type="password"] {
+    padding-right: 25px;
+}
+
+.login-div input[type="text"]:focus,
+.login-div input[type="password"]:focus {
+    border-color: #00A0BC;
+}
+
+/* show/hide password*/
+
+.passwordLabel {
+    padding:2px 0 0 25px; 
+    font-size: 14px; user-select:none; 
+    cursor: pointer;
+}
+
+.login-showPassword-div{
+    color:#4386cb;
+}
+
+div.login-floatLeft{
+    font-size: 14px;
+    color:black;
+    display: table;
+    
+}
+/* reset password */
+
+.resetLabel {
+    color:#4386cb;
+    border-bottom: 1px solid #4386cb;
+}
+
+/* login submit */
+
+#login .login-div .login-btn-div {
+    height: 60px;
+    margin-top:20px;
+}
+
+#login .login-div .login-btn-div input.template_submit{
+    border-radius: 5px;
+    background-color: #6305df;
+    box-shadow: 0px 5px #4f04b3;
+    /*
+    background-color: #00A0BC;
+    box-shadow: 0px 5px #006981;*/
+    color: white;
+    font-size: 18px;
+/*    margin-left: 14%;*/
+    margin-bottom:5px;
+    font-family: Roboto, sans-serif;
+    width:100%;
+    height: 29px;
+}
+
+#login .login-div .login-btn-div input.template_submit:hover {
+    background-color: #772adb;
+    box-shadow: 0px 5px #520baf;
+}
+
+#login .login-div .login-btn-div input.template_submit:active {
+    box-shadow: none;
+    margin-top: 5px;
+}
+
+/*copyright*/
+
+.PandToC {
+    color:#9DAAAF; 
+    border-bottom: 1px solid #9DAAAF;
+}
+
+.PandToC::after {
+    border-bottom: 2px solid #9DAAAF;
+}
+
+.ToCCont {
+    bottom:10px;
+    position:absolute;
+    width: calc(100% - 40px);
+}
+
+.ToC {
+    color: #9DAAAF;
+    font-size: 10px;
+    text-align:center;
+}
+
+@media only screen and (max-height: 550px) {
+    .ToCCont {
+        position: relative;
+        margin-top: 20px;
+        bottom:0px
+    }
+}
+
+/* links */
+/*a::after {
+    border-bottom: 2px solid #00A0BC;
+}*/
+
+/* error message */
+.login-error-message {
+    width: 100%;
+    background-color:#FFDDE2;
+}
+
+span.login-error-message-span {
+    font-size: 14px;
+    text-align: center;
+    display:block;
+    padding: 10px;
+    margin-top:10px;
+}
+
+#successMsg {
+    background-color: #DDFFF6;
+}
+/* ------- blog attributes ---------- */
+
+.blog {
+    background-color:#5FC2E6;
+    width: 70%;
+    right:0;
+    height:100%;
+    position:fixed;
+    display:flex;
+}
+
+.instructorBlogPage {
+    display:flex;
+    width:100%;
+    height:100%;
+    border:none;
+}
+
+#instructorBlog {
+    width:100%;
+}
+
+#studentBlog {
+    width:100%;
+}
+
+#blogArticle {
+    width: 100%;
+    display:flex;
+}
+
+@media only screen and (max-width: 1100px) {
+    
+    .login-div {
+        width: 35%;
+    }
+    
+    .blog {
+        width: 65%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .blog {
+        display: none;
+    }
+    
+    .login-div {
+        width: 100%;
+    }
+}
+
+/* SSO */
+#SSODivider {
+    position: relative;
+    width: 80%;
+    max-width: 300px;
+    justify-content: center;
+    margin: 18px 0;
+    color: #9DAAAF;
+    display: none;
+}
+
+#SSODivider:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-top: 1px solid #9DAAAF;
+    width: 100%;
+    z-index: -1;
+}
+
+#SSODivider > span {
+    padding: 0 12px;
+    font-size: 14px;
+    text-align: center;
+    background-color: #FFFFFF;
+}
+
+#SSOContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 80%;
+    max-width: 300px;
+    justify-content: space-between;
+}
+
+#SSOContainer .login-sso-item {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#SSOContainer .login-sso-icon {
+    width: 100%;
+    height: 60px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 60px 60px;
+}
+
+#SSOContainer .login-sso-label {
+    font-size: 14px;
+    padding: 6px 0 8px 0;
+    color: #47525D;
+}

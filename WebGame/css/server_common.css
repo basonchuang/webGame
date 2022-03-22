@@ -1,0 +1,402 @@
+@charset "UTF-8";
+/*
+@font-face {
+  font-family: 'moblab';
+  src: url("fonts/moblab/moblab.eot?#iefix") format("embedded-opentype"),
+    url("fonts/moblab/moblab.woff") format("woff"),
+    url("fonts/moblab/moblab.ttf") format("truetype"),
+    url("fonts/moblab/moblab.svg#moblab") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/Lato/Lato-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/Lato/Lato-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url("fonts/Roboto/Roboto-Light.woff2") format("woff2"),
+    url("fonts/Roboto/Roboto-Light.woff") format("woff"),
+    url("fonts/Roboto/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+*/
+/*-------------General Server CSS-------------*/
+body {
+   margin: 0;
+   font-family: Lato, sans-serif, Arial, Helvetica;
+}
+
+.header {
+    font-size: 32px;
+    width: 100%;
+    margin-top: 45px;
+    margin-bottom: 30px;
+}
+
+.blue-gradient {
+    background-image: -ms-linear-gradient(top left, #E0E8EE 0%, #ADC4D7 100%);
+    background-image: -moz-linear-gradient(top left, #E0E8EE 0%, #ADC4D7 100%);
+    background-image: -o-linear-gradient(top left, #E0E8EE 0%, #ADC4D7 100%);
+    background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, #E0E8EE), color-stop(1, #ADC4D7));
+    background-image: -webkit-linear-gradient(top left, #E0E8EE 0%, #ADC4D7 100%);
+    background-image: linear-gradient(to bottom right, #E0E8EE 0%, #ADC4D7 100%);
+}
+
+.moss-green {
+    color: #8A9A5B;
+}
+
+
+.redCheckboxWrapper {
+    float: left;
+    position:relative;
+    width: 20px;
+    height: 15px;
+}
+
+.red {
+    color: #EE2A49 !important;
+}
+
+/*----------------MobLab Icons--------------*/
+.icon::before {
+    font-family: "moblab";
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/*----------------MobLab Links--------------*/
+
+a {
+    color: #4386CB;
+    text-decoration: none;
+    border-bottom: 1px solid #4386CB;
+    display: inline-block;
+    position: relative;
+}
+
+a.red {
+    border-bottom: 1px solid #EE2A49;
+}
+
+a::after {
+    border-bottom: 2px solid #ee2a49;
+    width: 100%;
+    transform: scale(0,1);
+    transition: transform 420ms cubic-bezier(.4, 0, .2, 1);
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+}
+
+a:hover::after {
+    transform: scale(1,1);
+}
+
+input[type=checkbox],
+input[type=radio] {
+-webkit-appearance:none;
+  outline:none;
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  margin: 0;
+  margin-right:.6em;
+  padding:0;
+  cursor: pointer;
+  justify-content:center;
+  border: .125em solid #9DAAAF;
+  border-radius: 20%;
+  background:#ffffff;
+  box-shadow: inset 0em 0em 0em 0em #4386cb;
+  transition: background 120ms 100ms cubic-bezier(0.4, 0.0, 0.2, 1),border 200ms cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 260ms cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  }
+
+
+input[type=checkbox]:checked,
+input[type=radio]:checked {
+  border-color:#4386cb;
+  background-color:#4386cb;
+  border-radius: 25%;
+  box-shadow: inset 0px 0px 0px 20px #4386cb;
+}
+
+input[type=checkbox]:hover:not(:checked):not(:disabled),
+input[type=radio]:hover:not(:checked):not(:disabled){
+  border-color:#4386cb;
+}
+
+input[type=checkbox]:after,
+input[type=radio]:after{
+  font-family:'moblab';
+  content:'>';
+   text-shadow:0px 3px 1px rgba(16, 32, 55, 0.2), 0px 2px 2px rgba(16, 32, 55, 0.14), 0px 1px 5px rgba(16, 32, 55, 0.12);
+  color:#ffffff;
+  height:100%;
+  width:100%;
+  font-size:1.2em;
+  text-align:center;
+  vertical-align:middle;
+  position: absolute;
+  transform:scale(0);
+  opacity:0;
+  transition: transform 180ms cubic-bezier(0.4, 0.0, 0.2, 1), text-shadow 100ms cubic-bezier(0.4, 0.0, 0.2, 1), opacity 100ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+input[type=checkbox]:checked:after,
+input[type=radio]:checked:after{
+  opacity:1;
+  transform:scale(1);
+}
+
+input[type=checkbox]:hover:checked:not(:disabled):after,
+input[type=radio]:hover:checked:not(:disabled):after{
+  transform:scale(1.2);
+   text-shadow:0px 2px 4px rgba(16, 32, 55, 0.2), 0px 4px 5px rgba(16, 32, 55, 0.14), 0px 1px 10px rgba(16, 32, 55, 0.12);
+}
+
+/* for the brand name */
+.brandingContainer {
+    display: flex;
+    position: absolute;
+    top: 0;
+    color: white;
+    font-size: 18px;
+    margin: 20px 0px 0px 30px;
+    font-family: 'Roboto';
+    font-weight: 300;
+    align-items: center;
+}
+
+.branding {
+    margin-right: 11px;
+}
+
+.branding::before {
+  font-size: 1.89em;
+  content: "P";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-family: 'moblab';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.branding-new::before {
+  font-size: 1.89em;
+  height: 32px;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-family: 'moblab';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.brandingSubText-new {
+  margin-top: 4px;
+  margin-left: 6px;
+  font-size: 14px;
+  color: #102037;
+}
+
+/*center content*/
+.content {
+    height: calc(100% - 90px);
+    height: -moz-calc(100% - 90px);
+    height: -webkit-calc(100% - 90px);
+    text-align: center;
+}
+
+/* Submit button */
+
+#register .register-submit:hover,
+#resetPassword .reset-btn-div input.template_submit:hover,
+#lti .link-div .submit-btn-div input.template_submit:hover{
+    background-color: #00B6D6;
+    box-shadow: 0px 3px #007E9B;
+}
+
+#register .register-submit:disabled,
+#register .register-submit:disabled:hover,
+#resetPassword .reset-btn-div input.template_submit:disabled,
+#resetPassword .reset-btn-div input.template_submit:disabled:hover,
+#lti .link-div .submit-btn-div input.template_submit:disabled,
+#lti .link-div .submit-btn-div input.template_submit:disabled:hover,
+#login .login-div .login-btn-div input.template_submit:disabled, 
+#login .login-div .login-btn-div input.template_submit:disabled:hover {
+    background-color: #cccccc;
+    box-shadow: none;
+    color: #f2f2f2;
+    cursor: default;
+}
+
+/* corner overlay */
+
+.tiledIcons {
+    float: right;
+}
+
+.imgContainer {
+    height: 344px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    color:red;
+    user-select: none;
+    pointer-events: none;
+}
+
+/*---------------- Default Input --------------*/
+
+.default-input-label {
+    font-size: 14px;
+    margin-bottom: 3px;
+    width: 350px;
+    color: #47525D;
+}
+
+.default-input-div input{
+    height: 46px;
+    font-size: 16px;
+    width: 350px;
+    border: 1px solid #e1e3e6;
+    border-radius: 6px;
+    padding-left: 10px;
+    background-color: #FAFAFA;
+}
+
+.default-input-div input::placeholder {
+    color: #C9C9C9;
+}
+
+.default-input-div input:focus{
+    border: 1px solid #00A0BC;
+}
+
+/*---------------- Error Message --------------*/
+
+.error-message {
+    width: 100%;
+    background-color: #FFDDE2;
+}
+
+.error-message-span {
+    font-size: 14px;
+    text-align: center;
+    display: block;
+    padding: 10px;
+}
+
+/*---------------- Show/Hide Password --------------*/
+
+.redCheckboxWrapper {
+    float: left;
+    position:relative;
+    width: 20px;
+    height: 15px;
+}
+
+.login-showPassword-div .redCheckboxWrapper  {
+    width: 62px;
+    height: 20px;
+    margin-top: 2px;
+}
+
+.login-showPassword-div{
+    width:62px;
+    height:20px;
+    float: right;
+}
+
+.redCheckboxWrapper input[type="checkbox"] {
+    opacity:0;
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    margin: 0;
+}
+
+.redCheckboxWrapper input[type="checkbox"]#showPassword {
+    height: 20px;
+    width: 25px;
+    cursor: pointer;
+}
+
+.redCheckboxWrapper input[type="checkbox"] + label {
+
+    background-size: 15px 31px;
+    background-repeat: no-repeat;
+    background-position: 0px -16px;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    float: left;
+    padding: 0;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
+
+.redCheckboxWrapper input[type="checkbox"]:checked + label {
+    background-position: 0 0;
+}
+
+.redCheckboxWrapper input[type="checkbox"]#showPassword + label::after {
+    width: 20px;
+    height:20px;
+    margin-left: 5px;
+    color:#4386cb;
+    cursor:pointer;
+    font-size: 16px;
+}
+
+.redCheckboxWrapper input[type="checkbox"]#showPassword:checked + label::after {
+    content:"";
+    color:#4386cb;
+}
+
+/*---------------- Privacy and Terms footer --------------*/
+.PandToC {
+    color:#9DAAAF; 
+    border-bottom: 1px solid #9DAAAF;
+}
+
+.PandToC::after {
+    border-bottom: 2px solid #9DAAAF;
+}
+
+.ToCCont {
+    bottom:10px;
+    position:absolute;
+    width:100%;
+}
+
+.ToC {
+    color: #9DAAAF;
+    font-size: 10px;
+    text-align:center;
+}
