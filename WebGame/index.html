@@ -1,9 +1,10 @@
 <html>
     <head>
         <title>首頁</title>
+        <meta charset="utf-8">
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-        <meta charset="utf-8">
+        <script src="./function/cookie.js"></script>
         <link href="./css/moblab.css" rel="stylesheet" type="text/css">
         <link href="./css/server_common.css" rel="stylesheet" type="text/css">
         <link href="./css/login.css" rel="stylesheet" type="text/css">
@@ -41,7 +42,7 @@
                     -->
                 </div>
             </div>
-            <form method="POST" class="loginForm" id="loginForm" name="loginForm" autocomplete="off" action="./function/config.php">
+            <form method="POST" class="loginForm" id="loginForm" name="loginForm" autocomplete="off">
                 <div class="login-content-div" id="loginpartial">
                     <div class="login-username-div">
                         <div class="login-username-label login-label">
@@ -62,22 +63,41 @@
                         <input type="password" class="template_input" name="password" id="password" tabindex="2" aria-label="password">
                     </div>
                 </div>
-                <input type="hidden" id="action" value="insLogin">
-                <!--
-                <input type="hidden" name="savedURI" value="">
-                <input type="hidden" name="return_to" value="">
-                <input type="hidden" id="classCodeInput" name="classCode" value="">
-                <input type="hidden" id="queryParamInput" name="queryString" value="">
-                -->
                 <div class="login-btn-remember-div">
                     <div class="login-btn-div moblabOrangeBtn orangeBtnDialog">
-                        <input tabindex="3" type="submit" class="template_submit dijitButtonNode" name="Submit" value="Log In">
+                        <input tabindex="3" class="template_submit dijitButtonNode" name="Submit" value="Log In" onclick="login()">
                     </div>
-                    <!--
-                    <span class="login-register-span"><a tabindex="4" class="resetLabel" href="https://game.moblab.com/server/resetpassword.jsp">forgot password?</a></span>
-                    -->
                 </div>
             </form>
-            
         </div>
+    </body>
+    <script>
+        function login(){
+            username = document.getElementById("username").value;
+            password = document.getElementById("password").value;
+            $.ajax({
+                url: "./function/config.php",
+                type: "POST",
+                data: { action: "insLogin", username: username, password: password },
+                success: function(r) {
+                    var acc = r.substring(0,r.length-1);
+                    var passChanged = r.substring(r.length-1,r.length);
+
+                    if(r!=""){
+                        if(passChanged=="0"){
+                            setCookie("loginStatus", true);
+                            setCookie("account", acc);
+                            console.log("not changed");
+                            location.href="./InstructorPages/instructor.html";
+                        }else{
+                            console.log("pass changed");
+                            location.href="./InstructorPages/instructor.html";
+                        }
+                    }else{
+                        alert("Login fail!");
+                    }
+                },
+            });
+        }
+    </script>
 </html>

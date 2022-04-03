@@ -1,341 +1,66 @@
 <html>
     <head>
         <title>Instructor</title>
+        <meta charset="utf-8">
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-        <script type="text/javascript" src="../function/json-serialization.js"></script>
-        <script type="text/javascript" src="../function/session.js"></script>
-        <meta charset="utf-8">
+        <script src="../function/cookie.js"></script>
         <link rel="stylesheet" href="../css/chat.css">
-        <script>
-            window.onload = function loginDia() {
-                loginDialog = $("#dialog-login").dialog({
-                    autoOpen: true,
-                    closeOnEscape: false,
-                    height: 400,
-                    width: 400,
-                    modal: true,
-                    closeText: "",
-                    buttons:{
-                        "login":login
-                    }
-                });
-                form = loginDialog.find("form").on("submit",function(event){
-                    event.preventDefault();
-                    login();
-                });
-            }
-        </script>
-        <script>
-            $(function(){
-                dialog = $("#dialog-createGuessNumberGame").dialog({
-                    autoOpen: false,
-                    height: 600,
-                    width: 400,
-                    modal: true,
-                    buttons: {
-                        "Create a Guess Number Game": addGame,
-                        Cancel: function() {
-                        dialog.dialog( "close" );
-                        }
-                    },
-                    close: function() {
-                        form[ 0 ].reset();
-                    }
-                });
-                form = dialog.find( "form" ).on( "submit", function( event ) {
-                    event.preventDefault();
-                    addGame();
-                });
-                $("#createGuessNumberGame").button().on( "click", function() {
-                    dialog.dialog("open");
-                });
-            });
-        </script>
-        <script>
-            $(function(){
-                dialog2 = $("#dialog-createPrisonerGame").dialog({
-                    autoOpen: false,
-                    height: 350,
-                    width: 500,
-                    modal: true,
-                    buttons: {
-                        "Create a Prisoner's Dilemma Game": addPGame,
-                        Cancel: function() {
-                        dialog2.dialog( "close" );
-                        }
-                    },
-                    close: function() {
-                        form[ 0 ].reset();
-                    }
-                });
-                form = dialog2.find( "form" ).on( "submit", function( event ) {
-                    event.preventDefault();
-                    addPGame();
-                });
-                $("#createPrisonerGame").button().on("click",function(){
-                    dialog2.dialog("open");
-                });
-            });
-        </script>
+        <link href="../css/moblab.css" rel="stylesheet" type="text/css">
+        <link href="../css/server_common.css" rel="stylesheet" type="text/css">
+        <link href="../css/login.css" rel="stylesheet" type="text/css">
     </head>
-
-    <!-- 建立猜數字遊戲的對話框 -->
-    <div id="dialog-createGuessNumberGame" title="Create Guess Number Game">
-        <form>
-            <fieldset>
-            <label>Period</label>
-            <input id="Rid" name="Rid" type="text" value="2" class="text ui-widget-content ui-corner-all" required>
-            <br>
-            <label>P(Fraction of Avg.)</label>
-            <input id="pValue" name="pValue" type="text" value="70%" class="text ui-widget-content ui-corner-all" required>
-            <br>
-            <label>Payoff</label>
-            <input id="payoff" name="payoff" type="text" value="20" class="text ui-widget-content ui-corner-all" required>
-            <br>
-            <label>Number of student</label>
-            <input id="numOfStudent" name="numOfStudent" type="text" value="30" class="text ui-widget-content ui-corner-all" required>
-            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-            </fieldset>
-        </form>
-    </div>
-
-    <!-- 建立囚徒理論遊戲的對話框 -->
-    <div id="dialog-createPrisonerGame" title="Create Prisoner's Dilemma Game">
-        <form>
-            <fieldset>
-                <label>Round</label>
-                <input id="Round" name="Round" type="text" value="5" class="text ui-widget-content ui-corner-all" required>
-                <br>
-                <label>Number of student</label>
-                <input id="nOfStudent" type="number" value="30"  class="text ui-widget-content ui-corner-all" required>
-                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-            </fieldset>
-        </form>
-    </div>
-
-    <body class="inline" style="height: 100%;width: 100%;">
-        <p>Your Account: <span id="account" class="namelite"></span></p>
-        <button id="createGuessNumberGame">Create Guess Number Game</button>
-        <br>
-        <button id="createPrisonerGame" class="ui-button ui-corner-all ui-widget">Create Prisoner Game</button>
-
-        <br><br>
-
-        <table>
-            <label>Select the guess number game history!</label>
-            <select id="gameList" name="gameList" class="text ui-widget-content ui-corner-all">
-                <option></option>
-            </select>
-            <br>
-            <button id="startGame" class="text ui-widget-content ui-corner-all">Select Guessing Number Game!</button>
-        </table>
-
-        <table>
-            <label>Select the prisoner's dilemma game history!</label>
-            <select id="pGameList" name="pGameList" class="text ui-widget-content ui-corner-all">
-                <option></option>
-            </select>
-            <br>
-            <button id="startPGame" class="text ui-widget-content ui-corner-all">Select Prisoner's Dilemma Game!</button>
-        </table>
+    <body id="login" class="inline" style="height: 100%;width: 100%;">
+        <div class="login-div">
+            <div class="login-title">
+                <p>Your Account: <span id="account" class="namelite"></span></p>
+            </div>
+            <p>Classes<span id="classes" class="classes"></span></p>
+            <select id="playList"></select>
+        </div>
+        <div class="blog">
+            <div id="blogArticle">
+                <iframe id="blogIframe" src="../css/all.html" class="instructorBlogPage"></iframe>
+             </div>
+        </div>
     </body>
     
     <script type="text/javascript">
-        var url = location.href;
-        if(url.indexOf('?')!=-1){
-            var account = "";
-            var ary = url.split('?')[1].split('&');
-            for(i=0;i<=ary.length-1;i++)
-            {
-                if(ary[i].split('=')[0] == 'account')
-                    account = ary[i].split('=')[1];
-            }
-        }
-        htmls = ''+account;
-        document.getElementById("account").innerHTML += htmls;
-
         $(document).ready(function() {
-            poll();
-            poll2();
-            //addGame();
-            //addPGame();
+            if(getCookie("loginStatus")=='true'){
+                document.getElementById("account").innerHTML = getCookie("account");
+                pollPlayList();
+            }
+            else{
+                location.href="../index.html";
+            }
         });
-        //選擇遊戲
-        $(function(){
-            $("#startGame").on("click",function(){
-                Sid = document.getElementById("gameList").value;
-                jumpToResult(Sid);
-            });
-        });
-        $(function(){
-            $("#startPGame").on("click",function(){
-                Pid = document.getElementById("pGameList").value;
-                jumpToGame2Result(Pid);
-            });
-        });
-
-        function login(){
-            var login = Session.get("login")||{
-                account: ""
-            };
-            post_data = {action: "login"};
-            post_data["IAccount"] = document.getElementById("IAccount").value;
-            post_data["IPassword"] = document.getElementById("IPassword").value;
-
-            $.ajax({
-                url:"../function/ajax-server.php",
-                type:"POST",
-                data: post_data,
-                success:function(r){
-                    var acc = r.substring(0,r.length-1);
-                    var passChanged = r.substring(r.length-1,r.length);
-                   
-                    login.account=acc;
-                    $("#account").text(acc);
-
-                    if(r!=""){
-                        if(passChanged=="0"){
-                            console.log("not changed");
-                            loginDialog.dialog("close");
-                            //alert("Please change your password");
-                        }else{
-                            console.log("pass changed");
-                            loginDialog.dialog("close");
-                            //alert(acc+" Login Success!");
-                        }
-                    }else{
-                        alert("Login fail!");
-                        location.reload();
-                    }
-                },error:function(err){console.log(err)}
-            });
-        }
-        function jumpToMonitor(Sid){
-            url = "gGameMonitor.html?Sid="+Sid;
-            window.location.href = url;
-        }
-        
-        function jumpToResult(Sid){
-            url = "gGameResult.html?Sid="+Sid;
-            window.location.href = url;
-        }
-        function jumpToGame2Result(Pid){
-            url2 = "pGameMonitor.html?Pid="+Pid;
-
-            $.ajax({
-                url:"./function/config.php?method=startPGame",
-                success:function(result){
-                    window.location.href = url2;
-                },error:function(err){console.log(err)}
-            })
-        }
         //顯示遊戲列表
-        function poll() {
+        function pollPlayList() {
             Iid = document.getElementById("account").innerHTML;
+            
             $.ajax({
-                    url: "../function/ajax-server.php",
+                    url: "../function/config.php",
                     type: "POST",
-                    data: { action: "poll", Iid: Iid },
+                    data: { action: "pollPlayList", Iid: Iid },
                     success: function(r) {
-                        console.log(r);
                         obj = JSON.parse(r);
                         list_rooms = "";
-                        for(i=0;i<obj.length;i+=2) {
-                            list_rooms += "<option value='" + Iid + '_' + obj[i] + "'>Game code : " + Iid + '_' + obj[i] + "</option>";
+                        var gameType = new Array();
+                        for(i=1;i<obj.length;i+=2){
+                            gameType.push(obj[i]);
                         }
-                        $("#gameList").html(list_rooms).selectmenu("refresh", true);
+                        for(i=0;i<obj.length;i+=2) {
+                            if(gameType[i]=='g'){
+                                list_rooms += "<option value='BeautyContest" + '_' + obj[i] + "'>Game code : BeautyContest" + '_' + obj[i] + "</option>";
+                            }else if(gameType[i]=='p'){
+
+                            }
+                        }
+                        $("#playList").html(list_rooms).selectmenu("refresh", true);
                     },
                 });
             //setTimeout(poll, 1000);
-        }
-        function poll2(){
-            room2 = $("#pGameList").text();
-            if(room2.trim() != "") {
-                $.ajax({
-                    url: "../function/ajax-server.php",
-                    type: "POST",
-                    data: { action: "poll2" ,room: room2},
-                    success: function(r){
-                        console.log(r);
-                    },error:function(r){
-                        console.log(r);
-                    }
-                });
-            }
-        }
-        //建立遊戲
-        function addGame(create = false){
-            post_data = { action: "room" };
-            if(create) {
-                new_room = Math.floor(Math.random() * Math.floor(10000));
-                post_data["new"] = new_room;
-
-                post_data["createGGameBy"] = document.getElementById("account").innerHTML;
-                post_data["Sid"] = new_room;
-                post_data["Rid"] = document.getElementById("Rid").value;
-                post_data["pValue"] = document.getElementById("pValue").value;
-                post_data["payoff"] = document.getElementById("payoff").value;
-                post_data["numOfStudent"] = document.getElementById("numOfStudent").value;
-
-                alert("CREATE A NEW GAME : " + new_room);
-                id = post_data["createGGameBy"] + "_" + new_room;
-                jumpToMonitor(id);
-
-                create = true;
-            }
-            
-            $.ajax({
-                url: "../function/ajax-server.php",
-                type: "POST",
-                data: post_data,
-                success: function(r) {
-                    //obj = JSON.parse(r);
-                    /*
-                    list_rooms = "";
-                    for(id in obj) {
-                        list_rooms += "<option value='" + obj[id] + "'>Game code : " + obj[id] + "</option>";
-                    }
-                    */
-                    //$("#gameList").html(list_rooms).selectmenu("refresh", true);
-                },error:function(err){console.log(err)}
-            });
-            dialog.dialog("close");
-        }
-        function addPGame(create = false){
-            post_data = { action: "room2" };
-            if(create) {
-                new_room = Math.floor(Math.random() * Math.floor(10000));
-                post_data["new"] = new_room;
-
-                post_data["createPGameBy"] = document.getElementById("account").innerHTML;
-                post_data["Pid"] = new_room;
-                post_data["Round"] = document.getElementById("Round").value;
-                post_data["numOfStudent"] = document.getElementById("nOfStudent").value;
-                
-                alert("CREATE A NEW GAME : " + new_room);
-                id = post_data["createPGameBy"] + "_" + new_room;
-                jumpToGame2Result(id);
-
-                create = true;
-            }
-
-            $.ajax({
-                url: "../function/ajax-server.php",
-                type: "POST",
-                data: post_data,
-                success: function(r) {
-                    //obj = JSON.parse(r);
-                    list_rooms = "";
-                    /*
-                    for(id in obj) {
-                        list_rooms += "<option value='" + obj[id] + "'>Game code : " + obj[id] + "</option>";
-                    }*/
-                    jumpToGame2Result(obj);
-                    //$("#pGameList").html(list_rooms).selectmenu("refresh", true);
-                },error:function(err){console.log(err)}
-            });
-            dialog.dialog("close");
         }
     </script>
 </html>
