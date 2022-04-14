@@ -9,8 +9,8 @@ switch($_POST["action"]) {
     case "pollPlayList":
         pollPlayList();
         break;
-    case "pollGameInfo":
-        pollGameInfo();
+    case "pollGGameInfo":
+        pollGGameInfo();
         break;
     case "insCreateGGame":
         #insCreateGGame();
@@ -74,7 +74,7 @@ function pollPlayList(){
     echo json_encode($return);
 }
 
-function pollGameInfo(){
+function pollGGameInfo(){
     if(isset($_POST["gameCode"])){
         $gameCode = $_POST["gameCode"];
     }
