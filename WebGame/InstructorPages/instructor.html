@@ -26,15 +26,29 @@
     </body>
     
     <script type="text/javascript">
-        $(document).ready(function() {
-            if(getCookie("loginStatus")=='true'){
+        $(document).ready(function() {      //when the document ready
+            if(getCookie("loginStatus")=='true'){       //checking whether user login
                 document.getElementById("account").innerHTML = getCookie("account");
-                pollPlayList();
+                pollPlayList();     //show this teacher's classes play list
             }
-            else{
+            else{       //not login yet, return to index page
                 location.href="../index.html";
             }
+
+            $('#playList').change(function(){       //the game code that had been select
+                var selectedGameCode = $('#playList').val();
+                console.log(selectedGameCode);  //using this game code to get the info of this game
+                $.ajax({
+                    url: "../function/config.php",
+                    type: "POST",
+                    data: {action: "pollGameInfo", gameCode: selectedGameCode},
+                    success: function(r){
+                        console.log(r);
+                    }
+                });
+            });
         });
+
         //顯示遊戲列表
         function pollPlayList() {
             Iid = document.getElementById("account").innerHTML;
@@ -44,23 +58,21 @@
                     type: "POST",
                     data: { action: "pollPlayList", Iid: Iid },
                     success: function(r) {
-                        obj = JSON.parse(r);
-                        list_rooms = "";
-                        var gameType = new Array();
-                        for(i=1;i<obj.length;i+=2){
-                            gameType.push(obj[i]);
-                        }
-                        for(i=0;i<obj.length;i+=2) {
-                            if(gameType[i]=='g'){
+                        obj = JSON.parse(r);        //存放回傳結果
+                        list_rooms = "";        //要放入playList的html字串
+            
+                        for(i = 0; i < obj.length/2; i+=1) {    //this i is game code
+                            if(obj[obj.length/2+i] == 'g'){     //obj.length/2+i is the game type
                                 list_rooms += "<option value='BeautyContest" + '_' + obj[i] + "'>Game code : BeautyContest" + '_' + obj[i] + "</option>";
-                            }else if(gameType[i]=='p'){
+                            }else if(obj[obj.length/2+i] == 'p'){
 
                             }
                         }
-                        $("#playList").html(list_rooms).selectmenu("refresh", true);
+                        $("#playList").append(list_rooms);
+                        //$("#playList").html(list_rooms).selectmenu("refresh", true);
                     },
-                });
-            //setTimeout(poll, 1000);
+            });
+            //setTimeout(pollPlayList, 1000);
         }
     </script>
 </html>

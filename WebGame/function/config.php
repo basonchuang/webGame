@@ -9,6 +9,9 @@ switch($_POST["action"]) {
     case "pollPlayList":
         pollPlayList();
         break;
+    case "pollGameInfo":
+        pollGameInfo();
+        break;
     case "insCreateGGame":
         #insCreateGGame();
         break;
@@ -69,5 +72,28 @@ function pollPlayList(){
     $return = array_merge($gameCode, $gameType);
 
     echo json_encode($return);
+}
+
+function pollGameInfo(){
+    if(isset($_POST["gameCode"])){
+        $gameCode = $_POST["gameCode"];
+    }
+
+    global $con;
+    $sql = "SELECT `Round`,`pValue`,`payOff`,`numOfStudent` FROM `gGameInfo` WHERE `Sid` = '$gameCode'";
+    $result = mysqli_query($con,$sql);
+    $return = array();
+
+    while($x = mysqli_fetch_array($result)){
+        echo json_encode($x['Round']);
+        /*
+        array_push($return,$x['Round']);
+        array_push($return,$x['pValue']);
+        array_push($return,$x['payOff']);
+        array_push($return,$x['numOfStudent']);
+        */
+    }
+    
+    echo json_encode($return);      //return include round, pvalue, payoff, numofstudent 
 }
 ?>
